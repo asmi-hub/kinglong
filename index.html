@@ -16,7 +16,7 @@
             padding: 20px;
         }
         .container {
-            max-width: 1800px; /* 加宽容器以适应更多列 */
+            max-width: 1800px;
             margin: 0 auto;
             background-color: #fff;
             border-radius: 8px;
@@ -55,7 +55,7 @@
         }
         .date-header.today-highlight {
             font-weight: bold !important;
-            background-color: #ffc107; /* 今日日期标题加深颜色 */
+            background-color: #ffc107;
         }
         .shift-type {
             background-color: #fce5cd;
@@ -65,12 +65,10 @@
             filter: brightness(92%);
             font-weight: normal !important;
         }
-        /* 新增：早班今日高亮色 */
         .today-highlight.morning-shift {
             background-color: #e6f7ff !important;
             filter: none;
         }
-        /* 新增：晚班今日高亮色 */
         .today-highlight.evening-shift {
             background-color: #fff0f0 !important;
             filter: none;
@@ -106,7 +104,6 @@
                 <thead>
                     <tr>
                         <th>班次</th>
-                        <!-- 新增：2月16日 - 2月23日 -->
                         <th class="date-header" data-date="2026-02-16">2月16日<br><span class="lunar-date">星期一</span></th>
                         <th class="date-header" data-date="2026-02-17">2月17日<br><span class="lunar-date">星期二</span></th>
                         <th class="date-header" data-date="2026-02-18">2月18日<br><span class="lunar-date">星期三</span></th>
@@ -115,7 +112,6 @@
                         <th class="date-header" data-date="2026-02-21">2月21日<br><span class="lunar-date">星期六</span></th>
                         <th class="date-header" data-date="2026-02-22">2月22日<br><span class="lunar-date">星期日</span></th>
                         <th class="date-header" data-date="2026-02-23">2月23日<br><span class="lunar-date">星期一</span></th>
-                        <!-- 原有：2月24日 - 3月13日 -->
                         <th class="date-header" data-date="2026-02-24">2月24日<br><span class="lunar-date">星期二</span></th>
                         <th class="date-header" data-date="2026-02-25">2月25日<br><span class="lunar-date">星期三</span></th>
                         <th class="date-header" data-date="2026-02-26">2月26日<br><span class="lunar-date">星期四</span></th>
@@ -140,7 +136,6 @@
                     <!-- 早班（大客） -->
                     <tr>
                         <td class="shift-type">早班（大客）</td>
-                        <!-- 新增数据 -->
                         <td>陈志华</td>
                         <td>陈志华</td>
                         <td>濮勇</td>
@@ -149,7 +144,6 @@
                         <td>苏建义</td>
                         <td>褚志勇</td>
                         <td>陈志华</td>
-                        <!-- 原有数据 -->
                         <td>黄岩</td>
                         <td>黄岩</td>
                         <td>黄岩</td>
@@ -172,7 +166,6 @@
                     <!-- 早班（轻客） -->
                     <tr>
                         <td class="shift-type">早班（轻客）</td>
-                        <!-- 新增数据 -->
                         <td>黄岩</td>
                         <td>褚志勇</td>
                         <td>陈志华</td>
@@ -181,7 +174,6 @@
                         <td>黄岩</td>
                         <td>陈志华</td>
                         <td>濮勇</td>
-                        <!-- 原有数据 -->
                         <td>田茂荣</td>
                         <td>王生林</td>
                         <td>黄伟明</td>
@@ -204,7 +196,6 @@
                     <!-- 中晚班（大客） -->
                     <tr>
                         <td class="shift-type">中晚班（大客）</td>
-                        <!-- 新增数据 -->
                         <td>田茂荣</td>
                         <td>黄岩</td>
                         <td>褚志勇</td>
@@ -213,7 +204,6 @@
                         <td>田茂荣</td>
                         <td>黄岩</td>
                         <td>张道林</td>
-                        <!-- 原有数据 -->
                         <td>褚志勇、黄伟明</td>
                         <td>张海南、苏建义</td>
                         <td>濮勇、褚志勇</td>
@@ -236,7 +226,6 @@
                     <!-- 中晚班（轻客） -->
                     <tr>
                         <td class="shift-type">中晚班（轻客）</td>
-                        <!-- 新增数据 -->
                         <td>濮勇</td>
                         <td>田茂荣</td>
                         <td>黄岩</td>
@@ -245,7 +234,6 @@
                         <td>濮勇</td>
                         <td>田茂荣</td>
                         <td>张海南</td>
-                        <!-- 原有数据 -->
                         <td>濮勇</td>
                         <td>张道林</td>
                         <td>田茂荣</td>
@@ -271,34 +259,36 @@
     </div>
 
     <script>
-        // 农历日期映射（已补充2月16日-23日）
+        // 按你要求正确农历：
+        // 2月16日 除夕（腊月廿九）
+        // 2月17日 正月初一 以此类推
         const lunarMap = {
-            "2026-02-16": "丙午年 正月初一",
-            "2026-02-17": "丙午年 正月初二",
-            "2026-02-18": "丙午年 正月初三",
-            "2026-02-19": "丙午年 正月初四",
-            "2026-02-20": "丙午年 正月初五",
-            "2026-02-21": "丙午年 正月初六",
-            "2026-02-22": "丙午年 正月初七",
-            "2026-02-23": "丙午年 正月初八",
-            "2026-02-24": "丙午年 正月初九",
-            "2026-02-25": "丙午年 正月初十",
-            "2026-02-26": "丙午年 正月十一",
-            "2026-02-27": "丙午年 正月十二",
-            "2026-02-28": "丙午年 正月十三",
-            "2026-03-01": "丙午年 正月十四",
-            "2026-03-02": "丙午年 正月十五",
-            "2026-03-03": "丙午年 正月十六",
-            "2026-03-04": "丙午年 正月十七",
-            "2026-03-05": "丙午年 正月十八",
-            "2026-03-06": "丙午年 正月十九",
-            "2026-03-07": "丙午年 正月二十",
-            "2026-03-08": "丙午年 正月廿一",
-            "2026-03-09": "丙午年 正月廿二",
-            "2026-03-10": "丙午年 正月廿三",
-            "2026-03-11": "丙午年 正月廿四",
-            "2026-03-12": "丙午年 正月廿五",
-            "2026-03-13": "丙午年 正月廿六"
+            "2026-02-16": "丙午年 腊月廿九（除夕）",
+            "2026-02-17": "丙午年 正月初一",
+            "2026-02-18": "丙午年 正月初二",
+            "2026-02-19": "丙午年 正月初三",
+            "2026-02-20": "丙午年 正月初四",
+            "2026-02-21": "丙午年 正月初五",
+            "2026-02-22": "丙午年 正月初六",
+            "2026-02-23": "丙午年 正月初七",
+            "2026-02-24": "丙午年 正月初八",
+            "2026-02-25": "丙午年 正月初九",
+            "2026-02-26": "丙午年 正月初十",
+            "2026-02-27": "丙午年 正月十一",
+            "2026-02-28": "丙午年 正月十二",
+            "2026-03-01": "丙午年 正月十三",
+            "2026-03-02": "丙午年 正月十四",
+            "2026-03-03": "丙午年 正月十五",
+            "2026-03-04": "丙午年 正月十六",
+            "2026-03-05": "丙午年 正月十七",
+            "2026-03-06": "丙午年 正月十八",
+            "2026-03-07": "丙午年 正月十九",
+            "2026-03-08": "丙午年 正月二十",
+            "2026-03-09": "丙午年 正月廿一",
+            "2026-03-10": "丙午年 正月廿二",
+            "2026-03-11": "丙午年 正月廿三",
+            "2026-03-12": "丙午年 正月廿四",
+            "2026-03-13": "丙午年 正月廿五"
         };
 
         // 填充农历
@@ -327,7 +317,7 @@
             todayHeader.classList.add('today-highlight');
             const colIndex = Array.from(todayHeader.parentElement.children).indexOf(todayHeader);
             
-            // 修改：按班次类型为今日单元格添加不同样式
+            // 按班次类型为今日单元格添加不同样式
             document.querySelectorAll('tbody tr').forEach(row => {
                 const shiftCell = row.querySelector('.shift-type');
                 const targetCell = row.querySelector(`td:nth-child(${colIndex + 1})`);
