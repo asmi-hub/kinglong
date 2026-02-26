@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>消防控制室值班表</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+        body {
+            background-color: #f0f2f5;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        h1 {
+            background-color: #82c341;
+            color: #fff;
+            text-align: center;
+            padding: 15px;
+            font-size: 24px;
+        }
+        .table-wrapper {
+            overflow-x: auto;
+            scroll-behavior: smooth;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px 8px;
+            text-align: center;
+            min-width: 140px;
+            white-space: nowrap;
+        }
+        th {
+            background-color: #f8f8f8;
+            font-weight: bold;
+        }
+        .date-header {
+            background-color: #ffd966;
+            font-weight: bold;
+        }
+        .date-header.today-highlight {
+            font-weight: bold !important;
+            background-color: #ffc107;
+        }
+        .shift-type {
+            background-color: #fce5cd;
+            font-weight: bold;
+        }
+        .today-highlight {
+            filter: brightness(92%);
+            font-weight: normal !important;
+        }
+        .today-highlight.morning-shift {
+            background-color: #e6f7ff !important;
+            filter: none;
+        }
+        .today-highlight.evening-shift {
+            background-color: #fff0f0 !important;
+            filter: none;
+        }
+        .lunar-date {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+            white-space: normal;
+        }
+        .first-person {
+            color: #0066cc;
+        }
+        .today-marker {
+            color: #2ecc71;
+            margin-right: 4px;
+        }
+        @media (max-width: 768px) {
+            th, td {
+                min-width: 100px;
+                padding: 8px 4px;
+                font-size: 12px;
+                white-space: normal;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>消防控制室值班表</h1>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>班次</th>
+                        <th class="date-header" data-date="2026-02-16">2月16日<br><span class="lunar-date">星期一</span></th>
+                        <th class="date-header" data-date="2026-02-17">2月17日<br><span class="lunar-date">星期二</span></th>
+                        <th class="date-header" data-date="2026-02-18">2月18日<br><span class="lunar-date">星期三</span></th>
+                        <th class="date-header" data-date="2026-02-19">2月19日<br><span class="lunar-date">星期四</span></th>
+                        <th class="date-header" data-date="2026-02-20">2月20日<br><span class="lunar-date">星期五</span></th>
+                        <th class="date-header" data-date="2026-02-21">2月21日<br><span class="lunar-date">星期六</span></th>
+                        <th class="date-header" data-date="2026-02-22">2月22日<br><span class="lunar-date">星期日</span></th>
+                        <th class="date-header" data-date="2026-02-23">2月23日<br><span class="lunar-date">星期一</span></th>
+                        <th class="date-header" data-date="2026-02-24">2月24日<br><span class="lunar-date">星期二</span></th>
+                        <th class="date-header" data-date="2026-02-25">2月25日<br><span class="lunar-date">星期三</span></th>
+                        <th class="date-header" data-date="2026-02-26">2月26日<br><span class="lunar-date">星期四</span></th>
+                        <th class="date-header" data-date="2026-02-27">2月27日<br><span class="lunar-date">星期五</span></th>
+                        <th class="date-header" data-date="2026-02-28">2月28日<br><span class="lunar-date">星期六</span></th>
+                        <th class="date-header" data-date="2026-03-01">3月1日<br><span class="lunar-date">星期日</span></th>
+                        <th class="date-header" data-date="2026-03-02">3月2日<br><span class="lunar-date">星期一</span></th>
+                        <th class="date-header" data-date="2026-03-03">3月3日<br><span class="lunar-date">星期二</span></th>
+                        <th class="date-header" data-date="2026-03-04">3月4日<br><span class="lunar-date">星期三</span></th>
+                        <th class="date-header" data-date="2026-03-05">3月5日<br><span class="lunar-date">星期四</span></th>
+                        <th class="date-header" data-date="2026-03-06">3月6日<br><span class="lunar-date">星期五</span></th>
+                        <th class="date-header" data-date="2026-03-07">3月7日<br><span class="lunar-date">星期六</span></th>
+                        <th class="date-header" data-date="2026-03-08">3月8日<br><span class="lunar-date">星期日</span></th>
+                        <th class="date-header" data-date="2026-03-09">3月9日<br><span class="lunar-date">星期一</span></th>
+                        <th class="date-header" data-date="2026-03-10">3月10日<br><span class="lunar-date">星期二</span></th>
+                        <th class="date-header" data-date="2026-03-11">3月11日<br><span class="lunar-date">星期三</span></th>
+                        <th class="date-header" data-date="2026-03-12">3月12日<br><span class="lunar-date">星期四</span></th>
+                        <th class="date-header" data-date="2026-03-13">3月13日<br><span class="lunar-date">星期五</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- 早班（大客） -->
+                    <tr>
+                        <td class="shift-type">早班（大客）</td>
+                        <td>陈志华</td>
+                        <td>陈志华</td>
+                        <td>濮勇</td>
+                        <td>田茂荣</td>
+                        <td>黄岩</td>
+                        <td>苏建义</td>
+                        <td>褚志勇</td>
+                        <td>陈志华</td>
+                        <td>黄岩</td>
+                        <td>黄岩</td>
+                        <td>黄岩</td>
+                        <td>黄岩</td>
+                        <td>黄岩、徐翔</td>
+                        <td>黄岩、徐翔</td>
+                        <td>黄岩、徐翔</td>
+                        <td>黄岩、徐翔</td>
+                        <td>黄岩、徐翔</td>
+                        <td>张海南、苏建义</td>
+                        <td>张海南、苏建义</td>
+                        <td>张海南、苏建义</td>
+                        <td>张海南、苏建义</td>
+                        <td>张海南、苏建义</td>
+                        <td>张海南、苏建义</td>
+                        <td>张海南、苏建义</td>
+                        <td>张海南、苏建义</td>
+                        <td>张海南、苏建义</td>
+                    </tr>
+                    <!-- 早班（轻客） -->
+                    <tr>
+                        <td class="shift-type">早班（轻客）</td>
+                        <td>黄岩</td>
+                        <td>褚志勇</td>
+                        <td>陈志华</td>
+                        <td>濮勇</td>
+                        <td>田茂荣</td>
+                        <td>黄岩</td>
+                        <td>陈志华</td>
+                        <td>濮勇</td>
+                        <td>田茂荣</td>
+                        <td>王生林</td>
+                        <td>黄伟明</td>
+                        <td>苏建义</td>
+                        <td>褚志勇</td>
+                        <td>张海南</td>
+                        <td>濮勇</td>
+                        <td>张道林</td>
+                        <td>田茂荣</td>
+                        <td>王生林</td>
+                        <td>黄伟明</td>
+                        <td>徐翔</td>
+                        <td>褚志勇</td>
+                        <td>黄岩</td>
+                        <td>濮勇</td>
+                        <td>张道林</td>
+                        <td>田茂荣</td>
+                        <td>王生林</td>
+                    </tr>
+                    <!-- 中晚班（大客） -->
+                    <tr>
+                        <td class="shift-type">中晚班（大客）</td>
+                        <td>田茂荣</td>
+                        <td>黄岩</td>
+                        <td>褚志勇</td>
+                        <td>苏建义</td>
+                        <td>濮勇</td>
+                        <td>田茂荣</td>
+                        <td>黄岩</td>
+                        <td>张道林</td>
+                        <td>褚志勇、黄伟明</td>
+                        <td>张海南、苏建义</td>
+                        <td>濮勇、褚志勇</td>
+                        <td>张道林、张海南</td>
+                        <td>田茂荣、濮勇</td>
+                        <td>王生林、张道林</td>
+                        <td>黄伟明、田茂荣</td>
+                        <td>苏建义、王生林</td>
+                        <td>褚志勇、黄伟明</td>
+                        <td>黄岩、徐翔</td>
+                        <td>濮勇、褚志勇</td>
+                        <td>张道林、黄岩</td>
+                        <td>田茂荣、濮勇</td>
+                        <td>王生林、张道林</td>
+                        <td>黄伟明、田茂荣</td>
+                        <td>徐翔、王生林</td>
+                        <td>褚志勇、黄伟明</td>
+                        <td>黄岩、徐翔</td>
+                    </tr>
+                    <!-- 中晚班（轻客） -->
+                    <tr>
+                        <td class="shift-type">中晚班（轻客）</td>
+                        <td>濮勇</td>
+                        <td>田茂荣</td>
+                        <td>黄岩</td>
+                        <td>褚志勇</td>
+                        <td>褚志勇</td>
+                        <td>濮勇</td>
+                        <td>田茂荣</td>
+                        <td>张海南</td>
+                        <td>濮勇</td>
+                        <td>张道林</td>
+                        <td>田茂荣</td>
+                        <td>王生林</td>
+                        <td>黄伟明</td>
+                        <td>苏建义</td>
+                        <td>褚志勇</td>
+                        <td>张海南</td>
+                        <td>濮勇</td>
+                        <td>张道林</td>
+                        <td>田茂荣</td>
+                        <td>王生林</td>
+                        <td>黄伟明</td>
+                        <td>徐翔</td>
+                        <td>褚志勇</td>
+                        <td>黄岩</td>
+                        <td>濮勇</td>
+                        <td>张道林</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // 按你要求正确农历：
+        // 2月16日 除夕（腊月廿九）
+        // 2月17日 正月初一 以此类推
+        const lunarMap = {
+            "2026-02-16": "丙午年 腊月廿九（除夕）",
+            "2026-02-17": "丙午年 正月初一",
+            "2026-02-18": "丙午年 正月初二",
+            "2026-02-19": "丙午年 正月初三",
+            "2026-02-20": "丙午年 正月初四",
+            "2026-02-21": "丙午年 正月初五",
+            "2026-02-22": "丙午年 正月初六",
+            "2026-02-23": "丙午年 正月初七",
+            "2026-02-24": "丙午年 正月初八",
+            "2026-02-25": "丙午年 正月初九",
+            "2026-02-26": "丙午年 正月初十",
+            "2026-02-27": "丙午年 正月十一",
+            "2026-02-28": "丙午年 正月十二",
+            "2026-03-01": "丙午年 正月十三",
+            "2026-03-02": "丙午年 正月十四",
+            "2026-03-03": "丙午年 正月十五",
+            "2026-03-04": "丙午年 正月十六",
+            "2026-03-05": "丙午年 正月十七",
+            "2026-03-06": "丙午年 正月十八",
+            "2026-03-07": "丙午年 正月十九",
+            "2026-03-08": "丙午年 正月二十",
+            "2026-03-09": "丙午年 正月廿一",
+            "2026-03-10": "丙午年 正月廿二",
+            "2026-03-11": "丙午年 正月廿三",
+            "2026-03-12": "丙午年 正月廿四",
+            "2026-03-13": "丙午年 正月廿五"
+        };
+
+        // 填充农历
+        document.querySelectorAll('.date-header').forEach(header => {
+            const date = header.getAttribute('data-date');
+            if (lunarMap[date]) {
+                const lunarSpan = header.querySelector('.lunar-date');
+                lunarSpan.textContent = lunarMap[date];
+            }
+        });
+
+        // 获取本地日期
+        function getLocalDateString() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        const today = getLocalDateString();
+        const todayHeader = document.querySelector(`.date-header[data-date="${today}"]`);
+
+        if (todayHeader) {
+            // 添加高亮
+            todayHeader.classList.add('today-highlight');
+            const colIndex = Array.from(todayHeader.parentElement.children).indexOf(todayHeader);
+            
+            // 按班次类型为今日单元格添加不同样式
+            document.querySelectorAll('tbody tr').forEach(row => {
+                const shiftCell = row.querySelector('.shift-type');
+                const targetCell = row.querySelector(`td:nth-child(${colIndex + 1})`);
+                
+                if (targetCell) {
+                    targetCell.classList.add('today-highlight');
+                    
+                    // 早班添加浅蓝色样式
+                    if (shiftCell && shiftCell.textContent.includes('早班')) {
+                        targetCell.classList.add('morning-shift');
+                    }
+                    // 中晚班添加浅粉色样式
+                    else if (shiftCell && shiftCell.textContent.includes('中晚班')) {
+                        targetCell.classList.add('evening-shift');
+                    }
+                }
+            });
+
+            // 添加✔标识
+            const dateText = todayHeader.innerHTML.split('<br>')[0].trim();
+            const lunarText = todayHeader.innerHTML.split('<br>')[1];
+            todayHeader.innerHTML = `<span class="today-marker">✔</span>${dateText}<br>${lunarText}`;
+
+            // 自动滚动
+            const tableWrapper = document.querySelector('.table-wrapper');
+            const todayColumnRect = todayHeader.getBoundingClientRect();
+            const wrapperRect = tableWrapper.getBoundingClientRect();
+            const scrollLeft = todayColumnRect.left - wrapperRect.left - (wrapperRect.width / 2) + (todayColumnRect.width / 2);
+            tableWrapper.scrollBy({ left: scrollLeft, behavior: 'smooth' });
+        }
+
+        // 中晚班第一个人名蓝色
+        function formatMultiPersonNames() {
+            const shiftRows = document.querySelectorAll('tbody tr');
+            shiftRows.forEach(row => {
+                const shiftCell = row.querySelector('.shift-type');
+                if (shiftCell && shiftCell.textContent.includes('中晚班')) {
+                    const dataCells = row.querySelectorAll('td:not(.shift-type)');
+                    dataCells.forEach(cell => {
+                        const text = cell.textContent.trim();
+                        if (text.includes('、')) {
+                            const [firstPerson, ...others] = text.split('、');
+                            cell.innerHTML = `<span class="first-person">${firstPerson}</span>、${others.join('、')}`;
+                        }
+                    });
+                }
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', function () {
+            formatMultiPersonNames();
+        });
+    </script>
+</body>
+</html>
