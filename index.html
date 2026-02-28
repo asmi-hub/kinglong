@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<!-- saved from url=(0020)http://kl.osmi.cc:8/ -->
+<html lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>消防控制室值班表</title>
+<style>
+* {margin:0;padding:0;box-sizing:border-box;font-family:"Microsoft YaHei",sans-serif;}
+body {background:#f0f2f5;padding:20px;}
+.container {max-width:1800px;margin:0 auto;background:#fff;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,0.1);overflow:hidden;}
+h1 {background:#82c341;color:#fff;text-align:center;padding:15px;font-size:24px;}
+.table-wrapper {overflow-x:auto;scroll-behavior:smooth;}
+table {width:100%;border-collapse:collapse;}
+th,td {border:1px solid #ddd;padding:12px 8px;text-align:center;min-width:140px;white-space:nowrap;}
+th {background:#f8f8f8;font-weight:bold;cursor:pointer; /* 日期头手型 */}
+td {cursor:pointer; /* 人名单元格手型 */}
+.date-header {background:#ffd966;font-weight:bold;}
+/* 高亮样式 */
+.date-header.active-highlight {font-weight:bold!important;background:#ffc107;}
+.shift-type {background:#fce5cd;font-weight:bold;cursor:default; /* 班次列取消手型 */}
+.cell-highlight {filter:brightness(92%);font-weight:normal!important;}
+.cell-highlight.morning-shift {background:#e6f7ff!important;filter:none;}
+.cell-highlight.evening-shift {background:#fff0f0!important;filter:none;}
+.lunar-date {font-size:12px;color:#666;margin-top:4px;white-space:normal;}
+/* 周末字体暗红色 */
+.lunar-date.weekend {color:#c0392b;font-weight:600;}
+.first-person {color:#0066cc;}
+.today-marker {color:#2ecc71;margin-right:4px;}
+/* 班次在上、名字在下的样式 */
+.today-cell-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1.4;
+}
+.today-cell-shift {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 4px;
+    font-weight: bold;
+}
+.today-cell-name {
+    font-size: 14px;
+}
+@media (max-width:768px) {
+    th,td {min-width:100px;padding:8px 4px;font-size:12px;white-space:normal;}
+    .today-cell-shift {font-size:10px;}
+    .today-cell-name {font-size:12px;}
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>消防控制室值班表</h1>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>班次</th>
+                    <!-- 日期列 -->
+                    <th class="date-header" data-date="2026-02-16">2月16日<br><span class="lunar-date">星期一</span></th>
+                    <th class="date-header" data-date="2026-02-17">2月17日<br><span class="lunar-date">星期二</span></th>
+                    <th class="date-header" data-date="2026-02-18">2月18日<br><span class="lunar-date">星期三</span></th>
+                    <th class="date-header" data-date="2026-02-19">2月19日<br><span class="lunar-date">星期四</span></th>
+                    <th class="date-header" data-date="2026-02-20">2月20日<br><span class="lunar-date">星期五</span></th>
+                    <th class="date-header" data-date="2026-02-21">2月21日<br><span class="lunar-date weekend">星期六</span></th>
+                    <th class="date-header" data-date="2026-02-22">2月22日<br><span class="lunar-date weekend">星期日</span></th>
+                    <th class="date-header" data-date="2026-02-23">2月23日<br><span class="lunar-date">星期一</span></th>
+                    <th class="date-header" data-date="2026-02-24">2月24日<br><span class="lunar-date">星期二</span></th>
+                    <th class="date-header" data-date="2026-02-25">2月25日<br><span class="lunar-date">星期三</span></th>
+                    <th class="date-header" data-date="2026-02-26">2月26日<br><span class="lunar-date">星期四</span></th>
+                    <th class="date-header" data-date="2026-02-27">2月27日<br><span class="lunar-date">星期五</span></th>
+                    <th class="date-header active-highlight" data-date="2026-02-28"><span class="today-marker">✔</span>2月28日<br><span class="lunar-date weekend">星期六</span></th>
+                    <th class="date-header" data-date="2026-03-01">3月1日<br><span class="lunar-date weekend">星期日</span></th>
+                    <th class="date-header" data-date="2026-03-02">3月2日<br><span class="lunar-date">星期一</span></th>
+                    <th class="date-header" data-date="2026-03-03">3月3日<br><span class="lunar-date">星期二</span></th>
+                    <th class="date-header" data-date="2026-03-04">3月4日<br><span class="lunar-date">星期三</span></th>
+                    <th class="date-header" data-date="2026-03-05">3月5日<br><span class="lunar-date">星期四</span></th>
+                    <th class="date-header" data-date="2026-03-06">3月6日<br><span class="lunar-date">星期五</span></th>
+                    <th class="date-header" data-date="2026-03-07">3月7日<br><span class="lunar-date weekend">星期六</span></th>
+                    <th class="date-header" data-date="2026-03-08">3月8日<br><span class="lunar-date weekend">星期日</span></th>
+                    <th class="date-header" data-date="2026-03-09">3月9日<br><span class="lunar-date">星期一</span></th>
+                    <th class="date-header" data-date="2026-03-10">3月10日<br><span class="lunar-date">星期二</span></th>
+                    <th class="date-header" data-date="2026-03-11">3月11日<br><span class="lunar-date">星期三</span></th>
+                    <th class="date-header" data-date="2026-03-12">3月12日<br><span class="lunar-date">星期四</span></th>
+                    <th class="date-header" data-date="2026-03-13">3月13日<br><span class="lunar-date">星期五</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 早班（大客） -->
+                <tr>
+                    <td class="shift-type">早班（大客）</td>
+                    <td>陈志华</td><td>陈志华</td><td>濮勇</td><td>田茂荣</td><td>黄岩</td><td>苏建义</td><td>褚志勇</td>
+                    <td>陈志华</td><td>黄岩</td><td>黄岩</td><td>黄岩</td><td>黄岩</td><td data-original-content="黄岩、徐翔" class="cell-highlight morning-shift">
+                <div class="today-cell-content">
+                    <div class="today-cell-shift">早班（大客）</div>
+                    <div class="today-cell-name">黄岩、徐翔</div>
+                </div>
+            </td><td>黄岩、徐翔</td>
+                    <td>黄岩、徐翔</td><td>黄岩、徐翔</td><td>黄岩、徐翔</td><td>张海南、苏建义</td><td>张海南、苏建义</td>
+                    <td>张海南、苏建义</td><td>张海南、苏建义</td><td>张海南、苏建义</td><td>张海南、苏建义</td><td>张海南、苏建义</td>
+                    <td>张海南、苏建义</td><td>张海南、苏建义</td>
+                </tr>
+                <!-- 早班（轻客） -->
+                <tr>
+                    <td class="shift-type">早班（轻客）</td>
+                    <td>黄岩</td><td>褚志勇</td><td>陈志华</td><td>濮勇</td><td>田茂荣</td><td>黄岩</td><td>陈志华</td>
+                    <td>濮勇</td><td>田茂荣</td><td>王生林</td><td>黄伟明</td><td>苏建义</td><td data-original-content="褚志勇" class="cell-highlight morning-shift">
+                <div class="today-cell-content">
+                    <div class="today-cell-shift">早班（轻客）</div>
+                    <div class="today-cell-name">褚志勇</div>
+                </div>
+            </td><td>张海南</td>
+                    <td>濮勇</td><td>张道林</td><td>田茂荣</td><td>王生林</td><td>黄伟明</td><td>徐翔</td><td>褚志勇</td>
+                    <td>黄岩</td><td>濮勇</td><td>张道林</td><td>田茂荣</td><td>王生林</td>
+                </tr>
+                <!-- 晚班（大客） -->
+                <tr>
+                    <td class="shift-type">晚班（大客）</td>
+                    <td>田茂荣</td><td>黄岩</td><td>褚志勇</td><td>苏建义</td><td>濮勇</td><td>田茂荣</td><td>黄岩</td>
+                    <td>张道林</td><td>褚志勇、黄伟明</td><td>张海南、苏建义</td><td>濮勇、褚志勇</td><td>张道林、张海南</td><td data-original-content="田茂荣、濮勇" class="cell-highlight evening-shift">
+                <div class="today-cell-content">
+                    <div class="today-cell-shift">晚班（大客）</div>
+                    <div class="today-cell-name"><span class="first-person">田茂荣</span>、濮勇</div>
+                </div>
+            </td>
+                    <td>王生林、张道林</td><td>黄伟明、田茂荣</td><td>苏建义、王生林</td><td>褚志勇、黄伟明</td><td>黄岩、徐翔</td>
+                    <td>濮勇、褚志勇</td><td>张道林、黄岩</td><td>田茂荣、濮勇</td><td>王生林、张道林</td><td>黄伟明、田茂荣</td>
+                    <td>徐翔、王生林</td><td>褚志勇、黄伟明</td><td>黄岩、徐翔</td>
+                </tr>
+                <!-- 晚班（轻客） -->
+                <tr>
+                    <td class="shift-type">晚班（轻客）</td>
+                    <td>濮勇</td><td>田茂荣</td><td>黄岩</td><td>褚志勇</td><td>褚志勇</td><td>濮勇</td><td>田茂荣</td>
+                    <td>张海南</td><td>濮勇</td><td>张道林</td><td>田茂荣</td><td>王生林</td><td data-original-content="黄伟明" class="cell-highlight evening-shift">
+                <div class="today-cell-content">
+                    <div class="today-cell-shift">晚班（轻客）</div>
+                    <div class="today-cell-name">黄伟明</div>
+                </div>
+            </td><td>苏建义</td>
+                    <td>褚志勇</td><td>张海南</td><td>濮勇</td><td>张道林</td><td>田茂荣</td><td>王生林</td><td>黄伟明</td>
+                    <td>徐翔</td><td>褚志勇</td><td>黄岩</td><td>濮勇</td><td>张道林</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+// ===================== 新增：无操作自动刷新配置 =====================
+// 配置项：无操作超时时间（单位：秒），示例为5分钟（300秒），可自行修改
+const INACTIVITY_TIMEOUT = 60; 
+let refreshTimer = null;
+
+// 重置刷新倒计时
+const resetRefreshTimer = () => {
+    // 清除现有定时器
+    if (refreshTimer) clearTimeout(refreshTimer);
+    // 重新设置定时器：超时后刷新页面
+    refreshTimer = setTimeout(() => {
+        window.location.reload(); // 刷新页面
+    }, INACTIVITY_TIMEOUT * 1000);
+};
+
+// 监听用户操作事件（鼠标移动、点击、键盘输入等）
+const listenUserActivity = () => {
+    // 监听的事件类型（可根据需要扩展）
+    const activityEvents = [
+        'mousemove', 'click', 'keydown', 'scroll', 
+        'touchstart', 'touchend', 'touchmove'
+    ];
+    // 为每个事件绑定「重置倒计时」逻辑
+    activityEvents.forEach(event => {
+        document.addEventListener(event, resetRefreshTimer);
+    });
+    // 初始化倒计时
+    resetRefreshTimer();
+};
+// ===================== 新增结束 =====================
+
+// 工具函数：根据日期字符串获取星期几，并标记是否周末
+const getWeekday = (dateStr) => {
+    const weekDays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+    const date = new Date(dateStr);
+    const dayIndex = date.getDay();
+    return {
+        name: weekDays[dayIndex],
+        isWeekend: dayIndex === 0 || dayIndex === 6 // 0=周日，6=周六
+    };
+};
+
+// 工具函数：获取今日日期字符串
+const getToday = () => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+};
+
+// 核心函数：高亮指定日期列
+const highlightDateColumn = (targetHeader) => {
+    // 1. 清除所有已有的高亮样式
+    document.querySelectorAll('.date-header.active-highlight').forEach(hd => {
+        hd.classList.remove('active-highlight');
+        // 移除今日标记（如果有）
+        const html = hd.innerHTML.replace('<span class="today-marker">✔</span>', '');
+        hd.innerHTML = html;
+    });
+    document.querySelectorAll('td.cell-highlight').forEach(cell => {
+        cell.classList.remove('cell-highlight', 'morning-shift', 'evening-shift');
+        // 恢复单元格原始内容（移除班次+人名的结构）
+        if(cell.querySelector('.today-cell-content')) {
+            cell.innerHTML = cell.dataset.originalContent || cell.textContent;
+        }
+    });
+
+    // 2. 高亮选中的日期头
+    targetHeader.classList.add('active-highlight');
+    // 添加选中标记
+    const [dateTxt, lunarTxt] = targetHeader.innerHTML.split('<br>');
+    targetHeader.innerHTML = `<span class="today-marker">✔</span>${dateTxt.trim()}<br>${lunarTxt}`;
+
+    // 3. 计算列索引并高亮对应单元格
+    const colIdx = Array.from(targetHeader.parentElement.children).indexOf(targetHeader);
+    document.querySelectorAll('tbody tr').forEach(row => {
+        const shiftCell = row.querySelector('.shift-type');
+        const targetCell = row.querySelector(`td:nth-child(${colIdx+1})`);
+        if(targetCell && shiftCell) {
+            // 保存原始内容（用于恢复）
+            if(!targetCell.dataset.originalContent) {
+                targetCell.dataset.originalContent = targetCell.textContent.trim();
+            }
+            // 添加单元格高亮样式
+            targetCell.classList.add('cell-highlight');
+            if(shiftCell.textContent.includes('早班')) {
+                targetCell.classList.add('morning-shift');
+            } else if(shiftCell.textContent.includes('晚班')) {
+                targetCell.classList.add('evening-shift');
+            }
+
+            // 重构单元格内容：班次在上、名字在下
+            const shiftName = shiftCell.textContent;
+            const personName = targetCell.dataset.originalContent;
+            targetCell.innerHTML = `
+                <div class="today-cell-content">
+                    <div class="today-cell-shift">${shiftName}</div>
+                    <div class="today-cell-name">${personName}</div>
+                </div>
+            `;
+            // 保留晚班人名的颜色样式
+            if(shiftName.includes('晚班') && personName.includes('、')) {
+                const [first, ...rest] = personName.split('、');
+                targetCell.querySelector('.today-cell-name').innerHTML = `<span class="first-person">${first}</span>、${rest.join('、')}`;
+            }
+        }
+    });
+
+    // 4. 自动滚动到选中列
+    const wrapper = document.querySelector('.table-wrapper');
+    const rect = targetHeader.getBoundingClientRect();
+    const wrapperRect = wrapper.getBoundingClientRect();
+    wrapper.scrollBy({
+        left: rect.left - wrapperRect.left - (wrapperRect.width/2) + (rect.width/2),
+        behavior: 'smooth'
+    });
+};
+
+// 初始化逻辑
+const init = () => {
+    // ===================== 新增：启动无操作刷新监听 =====================
+    listenUserActivity();
+    // ===================== 新增结束 =====================
+
+    // 1. 填充星期几（替换原农历逻辑），并设置周末样式
+    document.querySelectorAll('.date-header').forEach(hd => {
+        const date = hd.dataset.date;
+        const weekdayInfo = getWeekday(date);
+        const lunarEl = hd.querySelector('.lunar-date');
+        
+        // 设置星期几文本
+        lunarEl.textContent = weekdayInfo.name;
+        // 如果是周末，添加周末样式类
+        if(weekdayInfo.isWeekend) {
+            lunarEl.classList.add('weekend');
+        }
+
+        // 2. 为日期头添加点击事件
+        hd.addEventListener('click', () => {
+            highlightDateColumn(hd);
+        });
+    });
+
+    // 3. 为所有人名单元格添加点击事件
+    document.querySelectorAll('tbody td:not(.shift-type)').forEach(cell => {
+        cell.addEventListener('click', () => {
+            // 获取当前单元格的列索引
+            const cellIdx = Array.from(cell.parentElement.children).indexOf(cell);
+            // 根据列索引找到对应的日期头
+            const targetHeader = document.querySelector(`thead .date-header:nth-child(${cellIdx+1})`);
+            if(targetHeader) {
+                highlightDateColumn(targetHeader);
+            }
+        });
+    });
+
+    // 4. 初始化今日高亮
+    const today = getToday();
+    const todayHd = document.querySelector(`.date-header[data-date="${today}"]`);
+    if(todayHd) {
+        highlightDateColumn(todayHd);
+    }
+};
+
+// 页面加载完成执行
+window.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body></html>
