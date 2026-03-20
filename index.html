@@ -584,7 +584,7 @@ function updateTotalAndOvertimeHour(name, restHour, overtimeHour, fullworkDay, t
 // ===================== 渲染表格 =====================
 function renderStats(records, period) {
   document.getElementById('statPeriod').textContent = 
-    `周期：${period.startStr} 至 ${period.endStr}`;
+    `周期：${period.startStr} 至 ${period.endStr} | 当月未到25号时，截止到当前日期`;
 
   const tbody = document.getElementById('statBody');
   tbody.innerHTML = '';
