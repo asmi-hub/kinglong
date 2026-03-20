@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>消防控制室值班表</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<style>
+/* ===================== 基础样式 ===================== */
+* {margin:0;padding:0;box-sizing:border-box;font-family:"Microsoft YaHei",sans-serif;}
+body {background:#f0f0f0;padding:10px;}
+
+/* ===================== 卡片布局样式 ===================== */
+.page-container {
+  max-width:1500px;
+  margin:0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.card {
+  background:#fff;
+  border-radius:8px;
+  box-shadow:0 2px 12px rgba(0,0,0,0.1);
+  overflow:hidden;
+  padding: 0;
+}
+
+/* ===================== 值班表卡片样式 ===================== */
+.schedule-card h1 {
+  background:#82c341;
+  color:#fff;
+  text-align:center;
+  padding:12px 15px;
+  font-size:20px;
+  margin:0;
+}
+.table-wrapper {overflow-x:auto;scroll-behavior:smooth;}
+table {width:100%;border-collapse:collapse;}
+
+/* PC端单元格样式 */
+th,td {
+    border:1px solid #ddd;
+    padding:8px 6px;
+    text-align:center;
+    min-width:120px;
+    white-space:normal;
+    font-size:13px;
+}
+th {background:#f8f8f8;font-weight:bold;cursor:pointer;}
+.date-header {background:#ffd966;font-weight:bold;}
+.date-header.active-highlight {font-weight:bold!important;background:#ffc107;}
+.shift-type {background:#fce5cd;font-weight:bold;cursor:default;}
+.cell-highlight {filter:brightness(92%);font-weight:normal!important;}
+.cell-highlight.morning-shift {background:#e6f7ff!important;filter:none;}
+.cell-highlight.evening-shift {background:#fff0f0!important;filter:none;}
+.lunar-date {font-size:11px;color:#666;margin-top:3px;white-space:normal;}
+.lunar-date.weekend {color:#c0392b;font-weight:600;}
+.today-marker {color:#2ecc71;margin-right:4px;}
+.rest-person {color:#c0392b;font-weight:normal!important;}
+.today-cell-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1.4;
+}
+.today-cell-shift {
+    font-size:11px;
+    color:#666;
+    margin-bottom:3px;
+    font-weight:bold;
+}
+.today-cell-name {
+    font-size:12px;
+}
+.first-person {color:#0066cc;}
+
+/* ===================== 移动端响应式样式 ===================== */
+@media (max-width:768px) {
+    th,td {
+        min-width:100px;
+        padding:8px 4px;
+        font-size:12px;
+        white-space:normal;
+    }
+    .today-cell-shift {
+        font-size:10px;
+    }
+    .today-cell-name {
+        font-size:12px;
+    }
+    .stat-table {
+        min-width: 950px; /* 调整适配新增列 */
+        font-size: 11px;
+    }
+    .stat-table th, .stat-table td {
+        padding: 5px 4px;
+    }
+    /* 移动端输入框适配 */
+    .rest-hour-input, .overtime-hour-input, .fullwork-day-input {
+        width: 60px!important;
+        font-size:11px!important;
+        padding: 2px 4px!important;
+    }
+    /* 移动端弹窗适配（也调大） */
+    .modal-content {
+        width: 95%!important;
+        max-width: none!important;
+        max-height: 90vh!important;
+    }
+}
+
+/* ===================== 值班统计卡片样式 ===================== */
+.stat-card {
+  padding: 0;
+}
+.stat-card-header {
+  background:#4285f4;
+  color:#fff;
+  text-align:center;
+  padding:12px 15px;
+  font-size:18px;
+  font-weight:bold;
+}
+.stat-period {
+    font-size:11px;
+    color:#666;
+    text-align:center;
+    margin-bottom:8px;
+}
+.stat-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 8px;
+}
+.stat-table {
+    min-width: 900px; /* 调整适配新增列 */
+    border-collapse:collapse;
+    font-size:11px;
+    width: 100%;
+}
+.stat-table th,
+.stat-table td {
+    border:1px solid #ccc;
+    padding:5px 4px;
+    text-align:center;
+    white-space: nowrap;
+}
+.stat-table th {
+    background:#f2f2f2;
+}
+.stat-name-cell {
+    cursor:pointer;
+    color:#0066cc;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+.stat-name-cell:hover {
+    color:#004999;
+    border-bottom: 1px solid #004999;
+}
+
+/* 调休小时输入框样式 - 移除步进箭头 */
+.rest-hour-input, .overtime-hour-input, .fullwork-day-input {
+    width: 70px;
+    padding: 3px 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+}
+.rest-hour-input {
+    color: #c0392b;
+    background: #fef5f5;
+}
+.overtime-hour-input {
+    color: #27ae60;
+    background: #f5fdf5;
+}
+.fullwork-day-input {
+    color: #8e44ad;
+    background: #f9f5fd;
+}
+/* 移除浏览器默认的数字输入框步进箭头 */
+.rest-hour-input::-webkit-outer-spin-button,
+.rest-hour-input::-webkit-inner-spin-button,
+.overtime-hour-input::-webkit-outer-spin-button,
+.overtime-hour-input::-webkit-inner-spin-button,
+.fullwork-day-input::-webkit-outer-spin-button,
+.fullwork-day-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.rest-hour-input, .overtime-hour-input, .fullwork-day-input {
+    -moz-appearance: textfield;
+}
+.rest-hour-input:focus {
+    outline: none;
+    border-color: #c0392b;
+    box-shadow: 0 0 0 2px rgba(192, 57, 43, 0.1);
+}
+.overtime-hour-input:focus {
+    outline: none;
+    border-color: #27ae60;
+    box-shadow: 0 0 0 2px rgba(39, 174, 96, 0.1);
+}
+.fullwork-day-input:focus {
+    outline: none;
+    border-color: #8e44ad;
+    box-shadow: 0 0 0 2px rgba(142, 68, 173, 0.1);
+}
+
+/* 总时长、加班时长单元格样式 */
+.total-hour-cell, .overtime-total-cell {
+    font-weight: 700;
+    color: #2c3e50;
+}
+.overtime-total-cell {
+    color: #e67e22;
+}
+/* 超出加班上限单元格样式 */
+.overtime-exceed-cell {
+    font-weight: 700;
+    color: #e74c3c; /* 红色突出显示 */
+}
+
+/* ===================== 弹窗样式（重点修改） ===================== */
+.modal-overlay {
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.5);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+    display:none;
+}
+.modal-content {
+    background:#fff;
+    border-radius:8px;
+    width: 90%;          /* 从90%调大 */
+    max-width: 900px;    /* 从600px调大到900px */
+    max-height: 90vh;    /* 从80vh调大到90vh */
+    overflow-y:auto;
+    padding:25px;        /* 增加内边距 */
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15); /* 增强阴影效果 */
+}
+.modal-header {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;  /* 增加底部间距 */
+    padding-bottom:15px; /* 增加底部内边距 */
+    border-bottom:1px solid #eee;
+}
+.modal-title {
+    font-size:20px;      /* 增大标题字体 */
+    font-weight:bold;
+    color:#333;
+}
+.modal-close {
+    width:35px;          /* 增大关闭按钮 */
+    height:35px;
+    line-height:35px;
+    text-align:center;
+    border-radius:50%;
+    background:#f5f5f5;
+    cursor:pointer;
+    font-size:18px;      /* 增大关闭符号 */
+    color:#666;
+    transition: all 0.2s;
+}
+.modal-close:hover {
+    background:#eee;
+    color:#333;
+}
+.modal-body {
+    font-size:14px;
+}
+.detail-table {
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;     /* 增加顶部间距 */
+}
+.detail-table th,
+.detail-table td {
+    border:1px solid #ddd;
+    padding:10px 12px;   /* 增加单元格内边距 */
+    text-align:center;
+}
+.detail-table th {
+    background:#f8f8f8;
+    font-size:14px;      /* 增大表头字体 */
+    font-weight: bold;
+}
+.detail-table td {
+    font-size:13px;      /* 增大单元格字体 */
+}
+.shift-type-day {
+    color:#27ae60;
+    font-weight:bold;
+}
+.shift-type-night {
+    color:#e74c3c;
+    font-weight:bold;
+}
+.rest-tag {
+    display:inline-block;
+    background:#ffebee;
+    color:#c0392b;
+    font-size:11px;      /* 增大标签字体 */
+    padding:2px 6px;     /* 增加标签内边距 */
+    border-radius:3px;
+    margin-left:4px;
+}
+</style>
+</head>
+<body>
+
+<!-- 页面主容器 -->
+<div class="page-container">
+  <!-- 值班表卡片 -->
+  <div class="card schedule-card">
+    <h1>消防控制室值班表</h1>
+    <div class="table-wrapper" id="tableWrapper">
+      <table>
+        <thead>
+          <tr id="header-row">
+            <th>班次</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="shift-type">早班（大客）</td></tr>
+          <tr><td class="shift-type">早班（轻客）</td></tr>
+          <tr><td class="shift-type">晚班（大客）</td></tr>
+          <tr><td class="shift-type">晚班（轻客）</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 统计卡片 -->
+  <div class="card stat-card">
+    <div class="stat-card-header">人员值班时长统计</div>
+    <div class="stat-section">
+      <div class="stat-period" id="statPeriod"></div>
+      <div class="stat-table-wrapper">
+        <table class="stat-table">
+          <thead>
+            <tr>
+              <th>姓名</th>
+              <th>白班天数</th>
+              <th>夜班天数</th>
+              <th>白班小时</th>
+              <th>夜班小时</th>
+              <th>上月加班超出(小时)</th>
+              <th>请假调休(小时)</th>
+              <th>满勤天数</th>
+              <th>总小时</th>
+              <th>加班时长</th>
+              <th>超出加班上限(6天)</th> <!-- 新增列 -->
+            </tr>
+          </thead>
+          <tbody id="statBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 详情弹窗 -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">XXX 值班详情</div>
+      <div class="modal-close" id="modalClose">×</div>
+    </div>
+    <div class="modal-body">
+      <div id="modalPeriod"></div>
+      <table class="detail-table">
+        <thead>
+          <tr>
+            <th>日期</th>
+            <th>星期</th>
+            <th>班次类型</th>
+            <th>具体班次</th>
+            <th>状态</th>
+          </tr>
+        </thead>
+        <tbody id="detailTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===================== 全局配置和变量 =====================
+setInterval(() => location.reload(), 300000); // 5分钟自动刷新
+const DAY_HOUR = 8;    // 白班每班次小时数
+const NIGHT_HOUR = 15; // 夜班每班次小时数
+const FULLWORK_HOUR_PER_DAY = 8; // 满勤每天小时数
+const OVERTIME_LIMIT = 6 * 8; // 加班上限：6天×8小时=48小时（新增配置）
+let globalScheduleRecords = [];
+let globalStatPeriod = {};
+let manualRestHours = {};
+let manualOvertimeHours = {};
+let manualFullworkDays = {}; // 存储手动设置的满勤天数
+
+// ===================== 统计周期计算 =====================
+function getStatPeriod() {
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = now.getMonth();
+  const d = now.getDate();
+
+  let start = new Date(y, m - 1, 26);
+  let end;
+  if (d <= 25) {
+    end = new Date(y, m, d);
+  } else {
+    end = new Date(y, m, 25);
+  }
+
+  function fmt(dt) {
+    return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,0)}-${String(dt.getDate()).padStart(2,0)}`;
+  }
+  
+  return { 
+    start, 
+    end, 
+    startStr: fmt(start), 
+    endStr: fmt(end),
+    startDate: start,
+    endDate: end
+  };
+}
+
+// ===================== 日期处理 =====================
+function parseDayStr(s, baseDate) {
+  const [m, d] = s.replace('日','').split('月').map(Number);
+  const y = baseDate.getFullYear();
+  return new Date(y, m-1, d);
+}
+
+// ===================== 姓名处理 =====================
+function cleanName(str) {
+  if (!str) return '';
+  return str
+    .replace(/<[^>]+>/g, '')
+    .trim();
+}
+
+function splitNames(str) {
+  const cleanStr = cleanName(str);
+  const names = [];
+  const restNames = [];
+  
+  if (cleanStr.includes('<rest>')) {
+    const restMatch = cleanStr.match(/<rest>(.*?)<\/rest>/);
+    if (restMatch && restMatch[1]) {
+      restMatch[1].split(/、|，|,/)
+        .map(n => n.trim())
+        .filter(n => n)
+        .forEach(n => restNames.push(n));
+    }
+    const normalStr = cleanStr.replace(/<rest>.*?<\/rest>/g, '');
+    normalStr.split(/、|，|,/)
+      .map(n => n.trim())
+      .filter(n => n)
+      .forEach(n => names.push(n));
+  } else {
+    cleanStr.split(/、|，|,/)
+      .map(n => n.trim())
+      .filter(n => n)
+      .forEach(n => names.push(n));
+  }
+  
+  return { names, restNames };
+}
+
+// ===================== 统计计算核心函数 =====================
+function calcStats(records, period) {
+  const map = {};
+
+  records.forEach(rec => {
+    const { dateStr, weekStr, dayBus, dayLight, nightBus, nightLight } = rec;
+    const day = parseDayStr(dateStr, period.start);
+    if (day < period.start || day > period.end) return;
+
+    [
+      {name: dayBus, shift: '早班（大客）', type: '白班', hour: DAY_HOUR},
+      {name: dayLight, shift: '早班（轻客）', type: '白班', hour: DAY_HOUR}
+    ].forEach(item => {
+      const { names, restNames } = splitNames(item.name);
+      
+      names.forEach(name => {
+        if (!map[name]) map[name] = { day:0, night:0, restHour:0, details: [] };
+        map[name].day += 1; 
+        map[name].details.push({ dateStr, weekStr, shiftType: item.type, shiftName: item.shift, isRest: false });
+      });
+      
+      restNames.forEach(name => {
+        if (!map[name]) map[name] = { day:0, night:0, restHour:0, details: [] };
+        map[name].restHour += item.hour; 
+        map[name].details.push({ dateStr, weekStr, shiftType: item.type, shiftName: item.shift, isRest: true });
+      });
+    });
+
+    [
+      {name: nightBus, shift: '晚班（大客）', type: '夜班', hour: NIGHT_HOUR},
+      {name: nightLight, shift: '晚班（轻客）', type: '夜班', hour: NIGHT_HOUR}
+    ].forEach(item => {
+      const { names, restNames } = splitNames(item.name);
+      
+      names.forEach(name => {
+        if (!map[name]) map[name] = { day:0, night:0, restHour:0, details: [] };
+        map[name].night += 1; 
+        map[name].details.push({ dateStr, weekStr, shiftType: item.type, shiftName: item.shift, isRest: false });
+      });
+      
+      restNames.forEach(name => {
+        if (!map[name]) map[name] = { day:0, night:0, restHour:0, details: [] };
+        map[name].restHour += item.hour; 
+        map[name].details.push({ dateStr, weekStr, shiftType: item.type, shiftName: item.shift, isRest: true });
+      });
+    });
+  });
+
+  const list = Object.entries(map).map(([name, o]) => ({
+    name,
+    dayCnt: parseFloat(o.day.toFixed(1)),
+    nightCnt: parseFloat(o.night.toFixed(1)),
+    dayH: parseFloat((o.day * DAY_HOUR).toFixed(1)),
+    nightH: parseFloat((o.night * NIGHT_HOUR).toFixed(1)),
+    restHour: parseFloat(o.restHour.toFixed(1)),
+    details: o.details.sort((a,b) => {
+      const d1 = parseDayStr(a.dateStr, globalStatPeriod.start);
+      const d2 = parseDayStr(b.dateStr, globalStatPeriod.start);
+      return d1 - d2;
+    })
+  }));
+
+  return { list };
+}
+
+// ===================== 实时计算总时长和加班时长 =====================
+function updateTotalAndOvertimeHour(name, restHour, overtimeHour, fullworkDay, totalCell, overtimeCell, exceedCell, dayH, nightH) {
+  // 处理"请填写"的情况，视为0
+  const rest = restHour === '请填写' || isNaN(restHour) ? 0 : parseFloat(restHour);
+  const over = overtimeHour === '请填写' || isNaN(overtimeHour) ? 0 : parseFloat(overtimeHour);
+  const fullworkDayNum = fullworkDay === '请填写' || isNaN(fullworkDay) ? 0 : parseFloat(fullworkDay);
+  // 计算总时长
+  const total = Math.max(0, dayH + nightH + over - rest);
+  
+  // 核心修改：满勤天数为0时，加班时长和超出加班上限都显示0
+  let overtimeTotal = 0;
+  let overtimeExceed = 0;
+  
+  // 只有满勤天数大于0时才计算加班时长和超出上限
+  if (fullworkDayNum > 0) {
+    // 计算满勤总小时 = 满勤天数 * 8
+    const fullworkTotalHour = fullworkDayNum * FULLWORK_HOUR_PER_DAY;
+    // 计算加班时长 = 总时长 - 满勤总小时（最小为0）
+    overtimeTotal = Math.max(0, total - fullworkTotalHour);
+    // 计算超出加班上限的时长（加班时长 - 48小时，最小为0）
+    overtimeExceed = Math.max(0, overtimeTotal - OVERTIME_LIMIT);
+  }
+  
+  totalCell.textContent = total.toFixed(1);
+  overtimeCell.textContent = overtimeTotal.toFixed(1);
+  exceedCell.textContent = overtimeExceed.toFixed(1); // 赋值给新增列
+  
+  // 保存手动输入的值（如果是"请填写"则保存0）
+  manualRestHours[name] = rest;
+  manualOvertimeHours[name] = over;
+  manualFullworkDays[name] = fullworkDayNum;
+}
+
+// ===================== 渲染表格 =====================
+function renderStats(records, period) {
+  document.getElementById('statPeriod').textContent = 
+    `周期：${period.startStr} 至 ${period.endStr} | 当月未到25号时，截止到当前日期`;
+
+  const tbody = document.getElementById('statBody');
+  tbody.innerHTML = '';
+
+  const stats = calcStats(records, period);
+  
+  // 先计算每个人的当前总小时，再按总小时降序排列
+  const sorted = stats.list.map(item => {
+    // 处理"请填写"的情况，视为0
+    const rest = manualRestHours[item.name] === undefined ? '请填写' : manualRestHours[item.name];
+    const over = manualOvertimeHours[item.name] === undefined ? '请填写' : manualOvertimeHours[item.name];
+    const fullworkDay = manualFullworkDays[item.name] === undefined ? '请填写' : manualFullworkDays[item.name];
+    
+    // 转换为数值进行计算
+    const restNum = rest === '请填写' ? 0 : parseFloat(rest);
+    const overNum = over === '请填写' ? 0 : parseFloat(over);
+    const fullworkDayNum = fullworkDay === '请填写' ? 0 : parseFloat(fullworkDay);
+    
+    const total = Math.max(0, item.dayH + item.nightH + overNum - restNum);
+    
+    // 核心修改：满勤天数为0时，加班时长和超出加班上限都显示0
+    let overtimeTotal = 0;
+    let overtimeExceed = 0;
+    if (fullworkDayNum > 0) {
+      const fullworkTotalHour = fullworkDayNum * FULLWORK_HOUR_PER_DAY;
+      overtimeTotal = Math.max(0, total - fullworkTotalHour);
+      overtimeExceed = Math.max(0, overtimeTotal - OVERTIME_LIMIT);
+    }
+    
+    return { ...item, total, overtimeTotal, overtimeExceed, rest, over, fullworkDay };
+  }).sort((a, b) => {
+    if (b.total !== a.total) return b.total - a.total;
+    return a.name.localeCompare(b.name, 'zh-CN');
+  });
+
+  sorted.forEach(item => {
+    const tr = document.createElement('tr');
+    const restVal = item.rest;
+    const overVal = item.over;
+    const fullworkDayVal = item.fullworkDay;
+    
+    tr.innerHTML = `
+      <td class="stat-name-cell" data-name="${item.name}">${item.name}</td>
+      <td>${item.dayCnt}</td>
+      <td>${item.nightCnt}</td>
+      <td>${item.dayH}</td>
+      <td>${item.nightH}</td>
+      <td><input type="number" class="overtime-hour-input" value="${overVal}" min="0" placeholder="请填写"></td>
+      <td><input type="number" class="rest-hour-input" value="${restVal}" min="0" placeholder="请填写"></td>
+      <td><input type="number" class="fullwork-day-input" value="${fullworkDayVal}" min="0" placeholder="请填写"></td>
+      <td class="total-hour-cell" id="total-${item.name}">${item.total.toFixed(1)}</td>
+      <td class="overtime-total-cell" id="overtime-total-${item.name}">${item.overtimeTotal.toFixed(1)}</td>
+      <td class="overtime-exceed-cell" id="overtime-exceed-${item.name}">${item.overtimeExceed.toFixed(1)}</td> <!-- 新增列 -->
+    `;
+    tbody.appendChild(tr);
+    tr.querySelector('.stat-name-cell').dataset.details = JSON.stringify(item.details);
+  });
+
+  // 绑定输入框事件
+  document.querySelectorAll('.rest-hour-input, .overtime-hour-input, .fullwork-day-input').forEach(input => {
+    // 输入框获得焦点时清空默认的"请填写"文本
+    input.addEventListener('focus', function() {
+      if (this.value === '请填写') {
+        this.value = '';
+      }
+    });
+    
+    // 输入框失去焦点时如果为空则显示"请填写"
+    input.addEventListener('blur', function() {
+      if (this.value === '') {
+        this.value = '请填写';
+      } else {
+        this.value = parseFloat(this.value).toFixed(1);
+      }
+      this.dispatchEvent(new Event('input'));
+    });
+    
+    input.addEventListener('input', function() {
+      const tr = this.closest('tr');
+      const name = tr.querySelector('.stat-name-cell').dataset.name;
+      const dayH = parseFloat(tr.children[3].textContent);
+      const nightH = parseFloat(tr.children[4].textContent);
+      const rest = tr.querySelector('.rest-hour-input').value;
+      const over = tr.querySelector('.overtime-hour-input').value;
+      const fullworkDay = tr.querySelector('.fullwork-day-input').value;
+      const totalCell = document.getElementById(`total-${name}`);
+      const overtimeCell = document.getElementById(`overtime-total-${name}`);
+      const exceedCell = document.getElementById(`overtime-exceed-${name}`); // 新增获取单元格
+      updateTotalAndOvertimeHour(name, rest, over, fullworkDay, totalCell, overtimeCell, exceedCell, dayH, nightH); // 传新增单元格
+    });
+  });
+
+  document.querySelectorAll('.stat-name-cell').forEach(cell => {
+    cell.addEventListener('click', function() {
+      const name = this.dataset.name;
+      const details = JSON.parse(this.dataset.details);
+      showDetailModal(name, details, period);
+    });
+  });
+}
+
+// ===================== 详情弹窗 =====================
+function showDetailModal(name, details, period) {
+  const modal = document.getElementById('detailModal');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalPeriod = document.getElementById('modalPeriod');
+  const detailTableBody = document.getElementById('detailTableBody');
+
+  modalTitle.textContent = `${name} 值班详情`;
+  modalPeriod.textContent = `统计周期：${period.startStr} 至 ${period.endStr}`;
+  detailTableBody.innerHTML = '';
+
+  if (details.length === 0) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td colspan="5">暂无值班记录</td>`;
+    detailTableBody.appendChild(tr);
+  } else {
+    details.forEach(item => {
+      const tr = document.createElement('tr');
+      const statusHtml = item.isRest ? '<span class="rest-tag">调休</span>' : '正常值班';
+      tr.innerHTML = `
+        <td>${item.dateStr}</td>
+        <td>${item.weekStr}</td>
+        <td class="${item.shiftType === '白班' ? 'shift-type-day' : 'shift-type-night'}">${item.shiftType}</td>
+        <td>${item.shiftName}</td>
+        <td>${statusHtml}</td>
+      `;
+      detailTableBody.appendChild(tr);
+    });
+  }
+  modal.style.display = 'flex';
+}
+
+document.getElementById('modalClose').onclick = () => detailModal.style.display = 'none';
+detailModal.onclick = e => e.target === detailModal && (detailModal.style.display = 'none');
+
+// ===================== 值班表交互 =====================
+function getTodayText() {
+  const t = new Date();
+  return `${t.getMonth()+1}月${t.getDate()}日`;
+}
+function scrollToColumn(el) {
+  const wrap = tableWrapper;
+  wrap.scrollLeft = el.offsetLeft - wrap.clientWidth/2 + el.offsetWidth/2;
+}
+function formatDoubleName(text) {
+  if (!text.includes('、')) return text;
+  const [a,...b] = text.split('、');
+  return `<span class="first-person">${a}</span>、${b.join('、')}`;
+}
+function clearAllHighlight() {
+  document.querySelectorAll('.date-header').forEach(h => {
+    h.classList.remove('active-highlight');
+    h.innerHTML = h.innerHTML.replace('<span class="today-marker">✔</span>', '');
+  });
+  document.querySelectorAll('td.cell-highlight').forEach(c => {
+    c.classList.remove('cell-highlight','morning-shift','evening-shift');
+    if (c.dataset.originalContent) c.innerHTML = c.dataset.originalContent;
+  });
+}
+function highlightColumn(colIndex) {
+  const headerRow = document.getElementById('header-row');
+  const rows = document.querySelectorAll('tbody tr');
+  
+  const th = headerRow.children[colIndex];
+  if (th) {
+    th.classList.add('active-highlight');
+    th.innerHTML = `<span class="today-marker">✔</span>${th.innerHTML.replace('<span class="today-marker">✔</span>','')}`;
+    scrollToColumn(th);
+  }
+  
+  rows.forEach((r,i) => {
+    const td = r.children[colIndex];
+    if (!td || !td.dataset.originalContent) return;
+    td.classList.add('cell-highlight', i<2 ? 'morning-shift' : 'evening-shift');
+    let txt = td.dataset.originalContent;
+    if (i === 2) txt = formatDoubleName(txt);
+    td.innerHTML = `
+      <div class="today-cell-content">
+        <div class="today-cell-shift">${['早班（大客）','早班（轻客）','晚班（大客）','晚班（轻客）'][i]}</div>
+        <div class="today-cell-name">${txt}</div>
+      </div>
+    `;
+  });
+}
+
+// ===================== 加载 =====================
+async function loadSchedule() {
+  try {
+    const rsp = await fetch('info.txt');
+    const txt = await rsp.text();
+    
+    const blocks = txt.split(/\n\s*\n/)
+      .map(b=>b.trim().split('\n').map(l=>l.trim()).filter(Boolean))
+      .filter(b=>b.length>=6);
+
+    const headerRow = document.getElementById('header-row');
+    const tbodyRows = document.querySelectorAll('tbody tr');
+    const todayText = getTodayText();
+    let todayCol = -1;
+    const scheduleRecords = [];
+
+    blocks.forEach((block, idx) => {
+      const [dateStr, weekStr, s1,s2,s3,s4] = block;
+      const col = idx+1;
+      if (dateStr === todayText) todayCol = col;
+
+      function parseLine(l) {
+        const v = l.split('）')[1]||'';
+        return v.trim();
+      }
+      
+      const data = [parseLine(s1), parseLine(s2), parseLine(s3), parseLine(s4)];
+      
+      scheduleRecords.push({
+        dateStr, weekStr, dayBus:data[0], dayLight:data[1], nightBus:data[2], nightLight:data[3]
+      });
+
+      const th = document.createElement('th');
+      th.className = 'date-header';
+      th.innerHTML = `${dateStr}<br><span class="lunar-date ${weekStr.includes('星期六')||weekStr.includes('星期日')?'weekend':''}">${weekStr}</span>`;
+      th.onclick = () => { clearAllHighlight(); highlightColumn(col); };
+      headerRow.appendChild(th);
+
+      tbodyRows.forEach((tr,i) => {
+        const td = document.createElement('td');
+        let cellContent = data[i];
+        if (cellContent.includes('<rest>')) {
+          cellContent = cellContent.replace(/<rest>(.*?)<\/rest>/g, '<span class="rest-person">[$1 调休]</span>');
+        }
+        td.innerHTML = cellContent;
+        td.dataset.originalContent = data[i];
+        tr.appendChild(td);
+      });
+    });
+
+    if (todayCol !== -1) highlightColumn(todayCol);
+    globalScheduleRecords = scheduleRecords;
+    globalStatPeriod = getStatPeriod();
+    renderStats(scheduleRecords, globalStatPeriod);
+
+  } catch(e) {
+    console.error('加载排班表失败：', e);
+    alert('排班表加载失败，请检查info.txt文件是否存在或格式是否正确');
+  }
+}
+
+window.onload = loadSchedule;
+</script>
+</body>
+</html>
