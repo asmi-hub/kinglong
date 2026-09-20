@@ -733,7 +733,7 @@ function highlightColumn(colIndex) {
     if (!td || !td.dataset.originalContent) return;
     td.classList.add('cell-highlight', i<2 ? 'morning-shift' : 'evening-shift');
     let txt = td.dataset.originalContent;
-    if (i === 2) txt = formatDoubleName(txt);
+    if (i === 0 || i === 2) txt = formatDoubleName(txt);
     td.innerHTML = `
       <div class="today-cell-content">
         <div class="today-cell-shift">${['早班（大客）','早班（轻客）','晚班（大客）','晚班（轻客）'][i]}</div>
