@@ -404,7 +404,6 @@ function getStatPeriod() {
   function fmt(dt) {
     return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,0)}-${String(dt.getDate()).padStart(2,0)}`;
   }
-  
   return { 
     start, 
     end, 
@@ -427,7 +426,6 @@ function splitNames(str) {
   const cleanStr = cleanName(str);
   const names = [];
   const restNames = [];
-  
   if (cleanStr.includes('<rest>')) {
     const restMatch = cleanStr.match(/<rest>(.*?)<\/rest>/);
     if (restMatch && restMatch[1]) {
@@ -447,7 +445,6 @@ function splitNames(str) {
       .filter(n => n)
       .forEach(n => names.push(n));
   }
-  
   return { names, restNames };
 }
 function calcStats(records, period) {
@@ -461,13 +458,11 @@ function calcStats(records, period) {
       {name: dayLight, shift: '早班（轻客）', type: '白班', hour: DAY_HOUR}
     ].forEach(item => {
       const { names, restNames } = splitNames(item.name);
-      
       names.forEach(name => {
         if (!map[name]) map[name] = { day:0, night:0, restHour:0, details: [] };
         map[name].day += 1; 
         map[name].details.push({ dateStr, weekStr, shiftType: item.type, shiftName: item.shift, isRest: false });
       });
-      
       restNames.forEach(name => {
         if (!map[name]) map[name] = { day:0, night:0, restHour:0, details: [] };
         map[name].restHour += item.hour; 
@@ -479,13 +474,11 @@ function calcStats(records, period) {
       {name: nightLight, shift: '晚班（轻客）', type: '夜班', hour: NIGHT_HOUR}
     ].forEach(item => {
       const { names, restNames } = splitNames(item.name);
-      
       names.forEach(name => {
         if (!map[name]) map[name] = { day:0, night:0, restHour:0, details: [] };
         map[name].night += 1; 
         map[name].details.push({ dateStr, weekStr, shiftType: item.type, shiftName: item.shift, isRest: false });
       });
-      
       restNames.forEach(name => {
         if (!map[name]) map[name] = { day:0, night:0, restHour:0, details: [] };
         map[name].restHour += item.hour; 
@@ -512,23 +505,18 @@ function updateTotalAndOvertimeHour(name, restHour, overtimeHour, fullworkDay, t
   const rest = restHour === '请填写' || isNaN(restHour) ? 0 : parseFloat(restHour);
   const over = overtimeHour === '请填写' || isNaN(overtimeHour) ? 0 : parseFloat(overtimeHour);
   const fullworkDayNum = fullworkDay === '请填写' || isNaN(fullworkDay) ? 0 : parseFloat(fullworkDay);
-  
   const total = Math.max(0, dayH + nightH + over - rest);
-  
   let overtimeTotal = 0;
   let overtimeExceed = 0;
-  
   if (fullworkDayNum > 0) {
     const fullworkTotalHour = fullworkDayNum * FULLWORK_HOUR_PER_DAY;
     const rawOvertime = Math.max(0, total - fullworkTotalHour);
     overtimeTotal = Math.min(rawOvertime, OVERTIME_LIMIT);
     overtimeExceed = Math.max(0, rawOvertime - OVERTIME_LIMIT);
   }
-  
   totalCell.textContent = total.toFixed(1);
   overtimeCell.textContent = overtimeTotal.toFixed(1);
   exceedCell.textContent = overtimeExceed.toFixed(1);
-  
   manualRestHours[name] = rest;
   manualOvertimeHours[name] = over;
   manualFullworkDays[name] = fullworkDayNum;
@@ -539,28 +527,22 @@ function renderStats(records, period) {
   const tbody = document.getElementById('statBody');
   tbody.innerHTML = '';
   const stats = calcStats(records, period);
-  
   const sorted = stats.list.map(item => {
     const rest = manualRestHours[item.name] === undefined ? '请填写' : manualRestHours[item.name];
     const over = manualOvertimeHours[item.name] === undefined ? '请填写' : manualOvertimeHours[item.name];
     const fullworkDay = manualFullworkDays[item.name] === undefined ? '请填写' : manualFullworkDays[item.name];
-    
     const restNum = rest === '请填写' ? 0 : parseFloat(rest);
     const overNum = over === '请填写' ? 0 : parseFloat(over);
     const fullworkDayNum = fullworkDay === '请填写' ? 0 : parseFloat(fullworkDay);
-    
     const total = Math.max(0, item.dayH + item.nightH + overNum - restNum);
-    
     let overtimeTotal = 0;
     let overtimeExceed = 0;
-    
     if (fullworkDayNum > 0) {
       const fullworkTotalHour = fullworkDayNum * FULLWORK_HOUR_PER_DAY;
       const rawOvertime = Math.max(0, total - fullworkTotalHour);
       overtimeTotal = Math.min(rawOvertime, OVERTIME_LIMIT);
       overtimeExceed = Math.max(0, rawOvertime - OVERTIME_LIMIT);
     }
-    
     return { ...item, total, overtimeTotal, overtimeExceed, rest, over, fullworkDay };
   }).sort((a, b) => {
     if (b.total !== a.total) return b.total - a.total;
@@ -571,7 +553,6 @@ function renderStats(records, period) {
     const restVal = item.rest;
     const overVal = item.over;
     const fullworkDayVal = item.fullworkDay;
-    
     tr.innerHTML = `
       <td class="stat-name-cell" data-name="${item.name}">${item.name}</td>
       <td>${item.dayCnt}</td>
@@ -594,7 +575,6 @@ function renderStats(records, period) {
         this.value = '';
       }
     });
-    
     input.addEventListener('blur', function() {
       if (this.value === '') {
         this.value = '请填写';
@@ -603,7 +583,6 @@ function renderStats(records, period) {
       }
       this.dispatchEvent(new Event('input'));
     });
-    
     input.addEventListener('input', function() {
       const tr = this.closest('tr');
       const name = tr.querySelector('.stat-name-cell').dataset.name;
@@ -664,20 +643,36 @@ function scrollToColumn(el) {
   const wrap = tableWrapper;
   wrap.scrollLeft = el.offsetLeft - wrap.clientWidth/2 + el.offsetWidth/2;
 }
-
-// 处理单个名字：判断是否带[休]
+// 解析单个名字单元
 function parseSingleName(rawName){
   const isRest = rawName.startsWith('[休]');
   const realName = isRest ? rawName.slice(3).trim() : rawName.trim();
   return {isRest, realName};
 }
-
+/**
+ * 普通单元格渲染：只处理[休]变红，**不加蓝色**，全部班次初始化用
+ */
+function renderNormalCellName(text) {
+  if (!text || text.trim() === '') return text;
+  const parts = text.split('、').map(p=>p.trim()).filter(p=>p);
+  const list = parts.map(p=>parseSingleName(p));
+  const htmlArr = [];
+  list.forEach(item=>{
+    if(item.isRest){
+      htmlArr.push(`<span class="rest-name-person">${item.realName}</span>`);
+    }else{
+      htmlArr.push(item.realName);
+    }
+  });
+  return htmlArr.join('、');
+}
+/**
+ * 高亮模式专用：处理红色 + 寻找第一个在岗人员设置蓝色，仅点击高亮/今日定位时调用
+ */
 function formatDoubleName(text) {
   if (!text || text.trim() === '') return text;
   const parts = text.split('、').map(p=>p.trim()).filter(p=>p);
-  // 解析每一项，得到是否休假、真实姓名
   const list = parts.map(p=>parseSingleName(p));
-  // 寻找第一个不是休假的下标，用来设置蓝色
   let firstNormalIdx = -1;
   for(let i=0;i<list.length;i++){
     if(!list[i].isRest){
@@ -685,7 +680,6 @@ function formatDoubleName(text) {
       break;
     }
   }
-  // 组装html
   const htmlArr = [];
   list.forEach((item,idx)=>{
     if(item.isRest){
@@ -700,7 +694,6 @@ function formatDoubleName(text) {
   });
   return htmlArr.join('、');
 }
-
 function clearAllHighlight() {
   document.querySelectorAll('.date-header').forEach(h => {
     h.classList.remove('active-highlight');
@@ -708,26 +701,28 @@ function clearAllHighlight() {
   });
   document.querySelectorAll('td.cell-highlight').forEach(c => {
     c.classList.remove('cell-highlight','morning-shift','evening-shift');
-    if (c.dataset.originalContent) c.innerHTML = c.dataset.originalContent;
+    if (c.dataset.originalContent) {
+      // 清除高亮，恢复普通渲染，只处理[休]，无蓝色
+      c.innerHTML = renderNormalCellName(c.dataset.originalContent);
+    }
   });
 }
 function highlightColumn(colIndex) {
   const headerRow = document.getElementById('header-row');
   const rows = document.querySelectorAll('tbody tr');
-  
   const th = headerRow.children[colIndex];
   if (th) {
     th.classList.add('active-highlight');
     th.innerHTML = `<span class="today-marker">✔</span>${th.innerHTML.replace('<span class="today-marker">✔</span>','')}`;
     scrollToColumn(th);
   }
-  
   rows.forEach((r,i) => {
     const td = r.children[colIndex];
     if (!td || !td.dataset.originalContent) return;
     td.classList.add('cell-highlight', i<2 ? 'morning-shift' : 'evening-shift');
+    // 高亮时全部4个班次都启用formatDoubleName（支持蓝色）
     let txt = td.dataset.originalContent;
-    if (i === 0 || i === 2) txt = formatDoubleName(txt);
+    txt = formatDoubleName(txt);
     td.innerHTML = `
       <div class="today-cell-content">
         <div class="today-cell-shift">${['早班（大客）','早班（轻客）','晚班（大客）','晚班（轻客）'][i]}</div>
@@ -740,7 +735,6 @@ async function loadSchedule() {
   try {
     const rsp = await fetch('info.txt');
     const txt = await rsp.text();
-    
     const blocks = txt.split(/\n\s*\n/)
       .map(b=>b.trim().split('\n').map(l=>l.trim()).filter(Boolean))
       .filter(b=>b.length>=6);
@@ -757,9 +751,7 @@ async function loadSchedule() {
         const v = l.split('）')[1]||'';
         return v.trim();
       }
-      
       const data = [parseLine(s1), parseLine(s2), parseLine(s3), parseLine(s4)];
-      
       scheduleRecords.push({
         dateStr, weekStr, dayBus:data[0], dayLight:data[1], nightBus:data[2], nightLight:data[3]
       });
@@ -771,18 +763,12 @@ async function loadSchedule() {
       tbodyRows.forEach((tr,i) => {
         const td = document.createElement('td');
         let rawCellContent = data[i];
-        // 早班大客i=0、晚班大客i=2，初始化直接解析[休]标签
-        if(i ===0 || i ===2){
-          td.innerHTML = formatDoubleName(rawCellContent);
-          td.dataset.originalContent = rawCellContent;
-        }else{
-          // 轻客班次保持原样，<rest>逻辑不变
-          if (rawCellContent.includes('<rest>')) {
-            rawCellContent = rawCellContent.replace(/<rest>(.*?)<\/rest>/g, '<span class="rest-person">[$1 调休]</span>');
-          }
-          td.innerHTML = rawCellContent;
-          td.dataset.originalContent = data[i];
+        // 全部4个班次初始化调用普通渲染函数：处理[休]变红，**不生成蓝色**
+        if (rawCellContent.includes('<rest>')) {
+          rawCellContent = rawCellContent.replace(/<rest>(.*?)<\/rest>/g, '<span class="rest-person">[$1 调休]</span>');
         }
+        td.innerHTML = renderNormalCellName(rawCellContent);
+        td.dataset.originalContent = data[i];
         tr.appendChild(td);
       });
     });
