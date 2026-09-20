@@ -667,7 +667,7 @@ function renderNormalCellName(text) {
   return htmlArr.join('、');
 }
 /**
- * 高亮模式专用：处理红色 + 寻找第一个在岗人员设置蓝色，仅点击高亮/今日定位时调用
+ * 高亮模式【大客专用】：处理红色 + 寻找第一个在岗人员设置蓝色
  */
 function formatDoubleName(text) {
   if (!text || text.trim() === '') return text;
@@ -720,9 +720,13 @@ function highlightColumn(colIndex) {
     const td = r.children[colIndex];
     if (!td || !td.dataset.originalContent) return;
     td.classList.add('cell-highlight', i<2 ? 'morning-shift' : 'evening-shift');
-    // 高亮时全部4个班次都启用formatDoubleName（支持蓝色）
     let txt = td.dataset.originalContent;
-    txt = formatDoubleName(txt);
+    // i=0早班大客 / i=2晚班大客：支持蓝色；i=1、3轻客只做红色，永远无蓝色
+    if(i === 0 || i === 2){
+      txt = formatDoubleName(txt);
+    }else{
+      txt = renderNormalCellName(txt);
+    }
     td.innerHTML = `
       <div class="today-cell-content">
         <div class="today-cell-shift">${['早班（大客）','早班（轻客）','晚班（大客）','晚班（轻客）'][i]}</div>
@@ -763,10 +767,10 @@ async function loadSchedule() {
       tbodyRows.forEach((tr,i) => {
         const td = document.createElement('td');
         let rawCellContent = data[i];
-        // 全部4个班次初始化调用普通渲染函数：处理[休]变红，**不生成蓝色**
         if (rawCellContent.includes('<rest>')) {
           rawCellContent = rawCellContent.replace(/<rest>(.*?)<\/rest>/g, '<span class="rest-person">[$1 调休]</span>');
         }
+        // 全部4个班次初始化调用普通渲染函数：处理[休]变红，**不生成蓝色**
         td.innerHTML = renderNormalCellName(rawCellContent);
         td.dataset.originalContent = data[i];
         tr.appendChild(td);
