@@ -301,8 +301,8 @@ th {background:#f8f8f8;font-weight:bold;cursor:pointer;}
     display:inline-block;
     background:#ffebee;
     color:#c0392b;
-    font-size:11px;
-    padding:2px 6px;
+    font-size:13px;
+    padding:3px 7px;
     border-radius:3px;
     margin-left:4px;
 }
@@ -420,12 +420,16 @@ function parseDayStr(s, baseDate) {
 }
 function cleanName(str) {
   if (!str) return '';
-  return str.replace(/<[^>]+>/g, '').trim();
+  // 移除html标签，保留 [休] 标记
+  return str.replace(/<(?!rest\/?)[^>]+>/g, '').trim();
 }
+// ========== 修复后的splitNames，支持识别[休]xxx为调休 ==========
 function splitNames(str) {
   const cleanStr = cleanName(str);
   const names = [];
   const restNames = [];
+
+  // 先处理 <rest> 标签（原有逻辑保留）
   if (cleanStr.includes('<rest>')) {
     const restMatch = cleanStr.match(/<rest>(.*?)<\/rest>/);
     if (restMatch && restMatch[1]) {
@@ -435,15 +439,25 @@ function splitNames(str) {
         .forEach(n => restNames.push(n));
     }
     const normalStr = cleanStr.replace(/<rest>.*?<\/rest>/g, '');
-    normalStr.split(/、|，|,/)
-      .map(n => n.trim())
-      .filter(n => n)
-      .forEach(n => names.push(n));
+    // 再处理普通文本里的 [休]xxx
+    const parts = normalStr.split(/、|，|,/).map(n => n.trim()).filter(n => n);
+    parts.forEach(p=>{
+      if(p.startsWith('[休]')){
+        restNames.push(p.slice(3).trim());
+      }else if(p){
+        names.push(p);
+      }
+    })
   } else {
-    cleanStr.split(/、|，|,/)
-      .map(n => n.trim())
-      .filter(n => n)
-      .forEach(n => names.push(n));
+    // 没有<rest>标签，直接分割，区分 [休]
+    const parts = cleanStr.split(/、|，|,/).map(n => n.trim()).filter(n => n);
+    parts.forEach(p=>{
+      if(p.startsWith('[休]')){
+        restNames.push(p.slice(3).trim());
+      }else if(p){
+        names.push(p);
+      }
+    })
   }
   return { names, restNames };
 }
