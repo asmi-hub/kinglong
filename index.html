@@ -151,9 +151,15 @@ th {background:#f8f8f8;font-weight:bold;cursor:pointer;}
     border-bottom: 1px solid transparent;
     transition: all 0.2s ease;
 }
+.stat-name-cell.has-rest {
+    color:#c0392b;
+}
 .stat-name-cell:hover {
     color:#004999;
     border-bottom: 1px solid #004999;
+}
+.stat-name-cell.has-rest:hover {
+    color:#a02626;
 }
 .rest-hour-input, .overtime-hour-input, .fullwork-day-input {
     width: 70px;
@@ -420,16 +426,12 @@ function parseDayStr(s, baseDate) {
 }
 function cleanName(str) {
   if (!str) return '';
-  // 移除html标签，保留 [休] 标记
   return str.replace(/<(?!rest\/?)[^>]+>/g, '').trim();
 }
-// ========== 修复后的splitNames，支持识别[休]xxx为调休 ==========
 function splitNames(str) {
   const cleanStr = cleanName(str);
   const names = [];
   const restNames = [];
-
-  // 先处理 <rest> 标签（原有逻辑保留）
   if (cleanStr.includes('<rest>')) {
     const restMatch = cleanStr.match(/<rest>(.*?)<\/rest>/);
     if (restMatch && restMatch[1]) {
@@ -439,7 +441,6 @@ function splitNames(str) {
         .forEach(n => restNames.push(n));
     }
     const normalStr = cleanStr.replace(/<rest>.*?<\/rest>/g, '');
-    // 再处理普通文本里的 [休]xxx
     const parts = normalStr.split(/、|，|,/).map(n => n.trim()).filter(n => n);
     parts.forEach(p=>{
       if(p.startsWith('[休]')){
@@ -449,7 +450,6 @@ function splitNames(str) {
       }
     })
   } else {
-    // 没有<rest>标签，直接分割，区分 [休]
     const parts = cleanStr.split(/、|，|,/).map(n => n.trim()).filter(n => n);
     parts.forEach(p=>{
       if(p.startsWith('[休]')){
@@ -567,8 +567,10 @@ function renderStats(records, period) {
     const restVal = item.rest;
     const overVal = item.over;
     const fullworkDayVal = item.fullworkDay;
+    // 判断有调休，追加 has‑rest class
+    const nameCellClass = item.restHour > 0 ? 'stat-name-cell has-rest' : 'stat-name-cell';
     tr.innerHTML = `
-      <td class="stat-name-cell" data-name="${item.name}">${item.name}</td>
+      <td class="${nameCellClass}" data-name="${item.name}">${item.name}</td>
       <td>${item.dayCnt}</td>
       <td>${item.nightCnt}</td>
       <td>${item.dayH}</td>
@@ -625,7 +627,7 @@ function showDetailModal(name, details, period) {
   const modalPeriod = document.getElementById('modalPeriod');
   const detailTableBody = document.getElementById('detailTableBody');
   modalTitle.textContent = `${name} 值班详情`;
-  modalPeriod.textContent = `统计周期：${period.startStr} 至 ${period.endStr}`;
+  modalPeriod.textContent = `周期：${period.startStr} 至 ${period.endStr}`;
   detailTableBody.innerHTML = '';
   if (details.length === 0) {
     const tr = document.createElement('tr');
@@ -634,7 +636,7 @@ function showDetailModal(name, details, period) {
   } else {
     details.forEach(item => {
       const tr = document.createElement('tr');
-      const statusHtml = item.isRest ? '<span class="rest-tag">调休</span>' : '正常';
+      const statusHtml = item.isRest ? '<span class="rest-tag">调休</span>' : '正常值班';
       tr.innerHTML = `
         <td>${item.dateStr}</td>
         <td>${item.weekStr}</td>
@@ -657,15 +659,11 @@ function scrollToColumn(el) {
   const wrap = tableWrapper;
   wrap.scrollLeft = el.offsetLeft - wrap.clientWidth/2 + el.offsetWidth/2;
 }
-// 解析单个名字单元
 function parseSingleName(rawName){
   const isRest = rawName.startsWith('[休]');
   const realName = isRest ? rawName.slice(3).trim() : rawName.trim();
   return {isRest, realName};
 }
-/**
- * 普通单元格渲染：只处理[休]变红，**不加蓝色**，全部班次初始化用
- */
 function renderNormalCellName(text) {
   if (!text || text.trim() === '') return text;
   const parts = text.split('、').map(p=>p.trim()).filter(p=>p);
@@ -680,9 +678,6 @@ function renderNormalCellName(text) {
   });
   return htmlArr.join('、');
 }
-/**
- * 高亮模式【大客专用】：处理红色 + 寻找第一个在岗人员设置蓝色
- */
 function formatDoubleName(text) {
   if (!text || text.trim() === '') return text;
   const parts = text.split('、').map(p=>p.trim()).filter(p=>p);
@@ -716,7 +711,6 @@ function clearAllHighlight() {
   document.querySelectorAll('td.cell-highlight').forEach(c => {
     c.classList.remove('cell-highlight','morning-shift','evening-shift');
     if (c.dataset.originalContent) {
-      // 清除高亮，恢复普通渲染，只处理[休]，无蓝色
       c.innerHTML = renderNormalCellName(c.dataset.originalContent);
     }
   });
@@ -735,7 +729,6 @@ function highlightColumn(colIndex) {
     if (!td || !td.dataset.originalContent) return;
     td.classList.add('cell-highlight', i<2 ? 'morning-shift' : 'evening-shift');
     let txt = td.dataset.originalContent;
-    // i=0早班大客 / i=2晚班大客：支持蓝色；i=1、3轻客只做红色，永远无蓝色
     if(i === 0 || i === 2){
       txt = formatDoubleName(txt);
     }else{
@@ -784,7 +777,6 @@ async function loadSchedule() {
         if (rawCellContent.includes('<rest>')) {
           rawCellContent = rawCellContent.replace(/<rest>(.*?)<\/rest>/g, '<span class="rest-person">[$1 调休]</span>');
         }
-        // 全部4个班次初始化调用普通渲染函数：处理[休]变红，**不生成蓝色**
         td.innerHTML = renderNormalCellName(rawCellContent);
         td.dataset.originalContent = data[i];
         tr.appendChild(td);
