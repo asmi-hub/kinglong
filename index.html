@@ -770,12 +770,19 @@ async function loadSchedule() {
       headerRow.appendChild(th);
       tbodyRows.forEach((tr,i) => {
         const td = document.createElement('td');
-        let cellContent = data[i];
-        if (cellContent.includes('<rest>')) {
-          cellContent = cellContent.replace(/<rest>(.*?)<\/rest>/g, '<span class="rest-person">[$1 调休]</span>');
+        let rawCellContent = data[i];
+        // 早班大客i=0、晚班大客i=2，初始化直接解析[休]标签
+        if(i ===0 || i ===2){
+          td.innerHTML = formatDoubleName(rawCellContent);
+          td.dataset.originalContent = rawCellContent;
+        }else{
+          // 轻客班次保持原样，<rest>逻辑不变
+          if (rawCellContent.includes('<rest>')) {
+            rawCellContent = rawCellContent.replace(/<rest>(.*?)<\/rest>/g, '<span class="rest-person">[$1 调休]</span>');
+          }
+          td.innerHTML = rawCellContent;
+          td.dataset.originalContent = data[i];
         }
-        td.innerHTML = cellContent;
-        td.dataset.originalContent = data[i];
         tr.appendChild(td);
       });
     });
