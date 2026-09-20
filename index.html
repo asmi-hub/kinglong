@@ -71,6 +71,7 @@ th {background:#f8f8f8;font-weight:bold;cursor:pointer;}
     font-size:12px;
 }
 .first-person {color:#0066cc;}
+.rest-name-person {color:#c0392b;}
 /* ===================== 移动端响应式样式 ===================== */
 @media (max-width:768px) {
     th,td {
@@ -507,7 +508,6 @@ function calcStats(records, period) {
   }));
   return { list };
 }
-// ===================== 核心计算逻辑已更新 =====================
 function updateTotalAndOvertimeHour(name, restHour, overtimeHour, fullworkDay, totalCell, overtimeCell, exceedCell, dayH, nightH) {
   const rest = restHour === '请填写' || isNaN(restHour) ? 0 : parseFloat(restHour);
   const over = overtimeHour === '请填写' || isNaN(overtimeHour) ? 0 : parseFloat(overtimeHour);
@@ -521,8 +521,6 @@ function updateTotalAndOvertimeHour(name, restHour, overtimeHour, fullworkDay, t
   if (fullworkDayNum > 0) {
     const fullworkTotalHour = fullworkDayNum * FULLWORK_HOUR_PER_DAY;
     const rawOvertime = Math.max(0, total - fullworkTotalHour);
-    
-    // 新规则：加班最多48小时，超出部分归入超出时长
     overtimeTotal = Math.min(rawOvertime, OVERTIME_LIMIT);
     overtimeExceed = Math.max(0, rawOvertime - OVERTIME_LIMIT);
   }
@@ -666,14 +664,43 @@ function scrollToColumn(el) {
   const wrap = tableWrapper;
   wrap.scrollLeft = el.offsetLeft - wrap.clientWidth/2 + el.offsetWidth/2;
 }
+
+// 处理单个名字：判断是否带[休]
+function parseSingleName(rawName){
+  const isRest = rawName.startsWith('[休]');
+  const realName = isRest ? rawName.slice(3).trim() : rawName.trim();
+  return {isRest, realName};
+}
+
 function formatDoubleName(text) {
   if (!text || text.trim() === '') return text;
-  if (!text.includes('、')) {
-    return `<span class="first-person">${text}</span>`;
+  const parts = text.split('、').map(p=>p.trim()).filter(p=>p);
+  // 解析每一项，得到是否休假、真实姓名
+  const list = parts.map(p=>parseSingleName(p));
+  // 寻找第一个不是休假的下标，用来设置蓝色
+  let firstNormalIdx = -1;
+  for(let i=0;i<list.length;i++){
+    if(!list[i].isRest){
+      firstNormalIdx = i;
+      break;
+    }
   }
-  const [a,...b] = text.split('、');
-  return `<span class="first-person">${a}</span>、${b.join('、')}`;
+  // 组装html
+  const htmlArr = [];
+  list.forEach((item,idx)=>{
+    if(item.isRest){
+      htmlArr.push(`<span class="rest-name-person">${item.realName}</span>`);
+    }else{
+      if(idx === firstNormalIdx){
+        htmlArr.push(`<span class="first-person">${item.realName}</span>`);
+      }else{
+        htmlArr.push(item.realName);
+      }
+    }
+  });
+  return htmlArr.join('、');
 }
+
 function clearAllHighlight() {
   document.querySelectorAll('.date-header').forEach(h => {
     h.classList.remove('active-highlight');
