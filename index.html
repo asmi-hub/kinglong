@@ -9,7 +9,6 @@
 /* ===================== 基础样式 ===================== */
 * {margin:0;padding:0;box-sizing:border-box;font-family:"Microsoft YaHei",sans-serif;}
 body {background:#f0f0f0;padding:10px;}
-
 /* ===================== 卡片布局样式 ===================== */
 .page-container {
   max-width:1500px;
@@ -25,7 +24,6 @@ body {background:#f0f0f0;padding:10px;}
   overflow:hidden;
   padding: 0;
 }
-
 /* ===================== 值班表卡片样式 ===================== */
 .schedule-card h1 {
   background:#82c341;
@@ -37,7 +35,6 @@ body {background:#f0f0f0;padding:10px;}
 }
 .table-wrapper {overflow-x:auto;scroll-behavior:smooth;}
 table {width:100%;border-collapse:collapse;}
-
 /* PC端单元格样式 */
 th,td {
     border:1px solid #ddd;
@@ -74,7 +71,6 @@ th {background:#f8f8f8;font-weight:bold;cursor:pointer;}
     font-size:12px;
 }
 .first-person {color:#0066cc;}
-
 /* ===================== 移动端响应式样式 ===================== */
 @media (max-width:768px) {
     th,td {
@@ -107,7 +103,6 @@ th {background:#f8f8f8;font-weight:bold;cursor:pointer;}
         max-height: 90vh!important;
     }
 }
-
 /* ===================== 值班统计卡片样式 ===================== */
 .stat-card {
   padding: 0;
@@ -159,7 +154,6 @@ th {background:#f8f8f8;font-weight:bold;cursor:pointer;}
     color:#004999;
     border-bottom: 1px solid #004999;
 }
-
 .rest-hour-input, .overtime-hour-input, .fullwork-day-input {
     width: 70px;
     padding: 3px 5px;
@@ -208,7 +202,6 @@ th {background:#f8f8f8;font-weight:bold;cursor:pointer;}
     border-color: #8e44ad;
     box-shadow: 0 0 0 2px rgba(142, 68, 173, 0.1);
 }
-
 .total-hour-cell, .overtime-total-cell {
     font-weight: 700;
     color: #2c3e50;
@@ -220,7 +213,6 @@ th {background:#f8f8f8;font-weight:bold;cursor:pointer;}
     font-weight: 700;
     color: #e74c3c;
 }
-
 /* ===================== 弹窗样式 ===================== */
 .modal-overlay {
     position:fixed;
@@ -316,7 +308,6 @@ th {background:#f8f8f8;font-weight:bold;cursor:pointer;}
 </style>
 </head>
 <body>
-
 <div class="page-container">
   <div class="card schedule-card">
     <h1>消防控制室值班表</h1>
@@ -336,7 +327,6 @@ th {background:#f8f8f8;font-weight:bold;cursor:pointer;}
       </table>
     </div>
   </div>
-
   <div class="card stat-card">
     <div class="stat-card-header">人员值班时长统计</div>
     <div class="stat-section">
@@ -364,7 +354,6 @@ th {background:#f8f8f8;font-weight:bold;cursor:pointer;}
     </div>
   </div>
 </div>
-
 <div class="modal-overlay" id="detailModal">
   <div class="modal-content">
     <div class="modal-header">
@@ -388,7 +377,6 @@ th {background:#f8f8f8;font-weight:bold;cursor:pointer;}
     </div>
   </div>
 </div>
-
 <script>
 setInterval(() => location.reload(), 300000);
 const DAY_HOUR = 8;
@@ -400,13 +388,11 @@ let globalStatPeriod = {};
 let manualRestHours = {};
 let manualOvertimeHours = {};
 let manualFullworkDays = {};
-
 function getStatPeriod() {
   const now = new Date();
   const y = now.getFullYear();
   const m = now.getMonth();
   const d = now.getDate();
-
   let start = new Date(y, m - 1, 26);
   let end;
   if (d <= 25) {
@@ -414,7 +400,6 @@ function getStatPeriod() {
   } else {
     end = new Date(y, m, 25);
   }
-
   function fmt(dt) {
     return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,0)}-${String(dt.getDate()).padStart(2,0)}`;
   }
@@ -428,18 +413,15 @@ function getStatPeriod() {
     endDate: end
   };
 }
-
 function parseDayStr(s, baseDate) {
   const [m, d] = s.replace('日','').split('月').map(Number);
   const y = baseDate.getFullYear();
   return new Date(y, m-1, d);
 }
-
 function cleanName(str) {
   if (!str) return '';
   return str.replace(/<[^>]+>/g, '').trim();
 }
-
 function splitNames(str) {
   const cleanStr = cleanName(str);
   const names = [];
@@ -467,15 +449,12 @@ function splitNames(str) {
   
   return { names, restNames };
 }
-
 function calcStats(records, period) {
   const map = {};
-
   records.forEach(rec => {
     const { dateStr, weekStr, dayBus, dayLight, nightBus, nightLight } = rec;
     const day = parseDayStr(dateStr, period.start);
     if (day < period.start || day > period.end) return;
-
     [
       {name: dayBus, shift: '早班（大客）', type: '白班', hour: DAY_HOUR},
       {name: dayLight, shift: '早班（轻客）', type: '白班', hour: DAY_HOUR}
@@ -494,7 +473,6 @@ function calcStats(records, period) {
         map[name].details.push({ dateStr, weekStr, shiftType: item.type, shiftName: item.shift, isRest: true });
       });
     });
-
     [
       {name: nightBus, shift: '晚班（大客）', type: '夜班', hour: NIGHT_HOUR},
       {name: nightLight, shift: '晚班（轻客）', type: '夜班', hour: NIGHT_HOUR}
@@ -514,7 +492,6 @@ function calcStats(records, period) {
       });
     });
   });
-
   const list = Object.entries(map).map(([name, o]) => ({
     name,
     dayCnt: parseFloat(o.day.toFixed(1)),
@@ -528,10 +505,8 @@ function calcStats(records, period) {
       return d1 - d2;
     })
   }));
-
   return { list };
 }
-
 // ===================== 核心计算逻辑已更新 =====================
 function updateTotalAndOvertimeHour(name, restHour, overtimeHour, fullworkDay, totalCell, overtimeCell, exceedCell, dayH, nightH) {
   const rest = restHour === '请填写' || isNaN(restHour) ? 0 : parseFloat(restHour);
@@ -560,14 +535,11 @@ function updateTotalAndOvertimeHour(name, restHour, overtimeHour, fullworkDay, t
   manualOvertimeHours[name] = over;
   manualFullworkDays[name] = fullworkDayNum;
 }
-
 function renderStats(records, period) {
   document.getElementById('statPeriod').textContent = 
     `周期：${period.startStr} 至 ${period.endStr} | 当月未到25号时，截止到当前日期`;
-
   const tbody = document.getElementById('statBody');
   tbody.innerHTML = '';
-
   const stats = calcStats(records, period);
   
   const sorted = stats.list.map(item => {
@@ -596,7 +568,6 @@ function renderStats(records, period) {
     if (b.total !== a.total) return b.total - a.total;
     return a.name.localeCompare(b.name, 'zh-CN');
   });
-
   sorted.forEach(item => {
     const tr = document.createElement('tr');
     const restVal = item.rest;
@@ -619,7 +590,6 @@ function renderStats(records, period) {
     tbody.appendChild(tr);
     tr.querySelector('.stat-name-cell').dataset.details = JSON.stringify(item.details);
   });
-
   document.querySelectorAll('.rest-hour-input, .overtime-hour-input, .fullwork-day-input').forEach(input => {
     input.addEventListener('focus', function() {
       if (this.value === '请填写') {
@@ -650,7 +620,6 @@ function renderStats(records, period) {
       updateTotalAndOvertimeHour(name, rest, over, fullworkDay, totalCell, overtimeCell, exceedCell, dayH, nightH);
     });
   });
-
   document.querySelectorAll('.stat-name-cell').forEach(cell => {
     cell.addEventListener('click', function() {
       const name = this.dataset.name;
@@ -659,17 +628,14 @@ function renderStats(records, period) {
     });
   });
 }
-
 function showDetailModal(name, details, period) {
   const modal = document.getElementById('detailModal');
   const modalTitle = document.getElementById('modalTitle');
   const modalPeriod = document.getElementById('modalPeriod');
   const detailTableBody = document.getElementById('detailTableBody');
-
   modalTitle.textContent = `${name} 值班详情`;
   modalPeriod.textContent = `统计周期：${period.startStr} 至 ${period.endStr}`;
   detailTableBody.innerHTML = '';
-
   if (details.length === 0) {
     const tr = document.createElement('tr');
     tr.innerHTML = `<td colspan="5">暂无值班记录</td>`;
@@ -690,10 +656,8 @@ function showDetailModal(name, details, period) {
   }
   modal.style.display = 'flex';
 }
-
 document.getElementById('modalClose').onclick = () => detailModal.style.display = 'none';
 detailModal.onclick = e => e.target === detailModal && (detailModal.style.display = 'none');
-
 function getTodayText() {
   const t = new Date();
   return `${t.getMonth()+1}月${t.getDate()}日`;
@@ -703,7 +667,10 @@ function scrollToColumn(el) {
   wrap.scrollLeft = el.offsetLeft - wrap.clientWidth/2 + el.offsetWidth/2;
 }
 function formatDoubleName(text) {
-  if (!text.includes('、')) return text;
+  if (!text || text.trim() === '') return text;
+  if (!text.includes('、')) {
+    return `<span class="first-person">${text}</span>`;
+  }
   const [a,...b] = text.split('、');
   return `<span class="first-person">${a}</span>、${b.join('、')}`;
 }
@@ -742,7 +709,6 @@ function highlightColumn(colIndex) {
     `;
   });
 }
-
 async function loadSchedule() {
   try {
     const rsp = await fetch('info.txt');
@@ -751,18 +717,15 @@ async function loadSchedule() {
     const blocks = txt.split(/\n\s*\n/)
       .map(b=>b.trim().split('\n').map(l=>l.trim()).filter(Boolean))
       .filter(b=>b.length>=6);
-
     const headerRow = document.getElementById('header-row');
     const tbodyRows = document.querySelectorAll('tbody tr');
     const todayText = getTodayText();
     let todayCol = -1;
     const scheduleRecords = [];
-
     blocks.forEach((block, idx) => {
       const [dateStr, weekStr, s1,s2,s3,s4] = block;
       const col = idx+1;
       if (dateStr === todayText) todayCol = col;
-
       function parseLine(l) {
         const v = l.split('）')[1]||'';
         return v.trim();
@@ -773,13 +736,11 @@ async function loadSchedule() {
       scheduleRecords.push({
         dateStr, weekStr, dayBus:data[0], dayLight:data[1], nightBus:data[2], nightLight:data[3]
       });
-
       const th = document.createElement('th');
       th.className = 'date-header';
       th.innerHTML = `${dateStr}<br><span class="lunar-date ${weekStr.includes('星期六')||weekStr.includes('星期日')?'weekend':''}">${weekStr}</span>`;
       th.onclick = () => { clearAllHighlight(); highlightColumn(col); };
       headerRow.appendChild(th);
-
       tbodyRows.forEach((tr,i) => {
         const td = document.createElement('td');
         let cellContent = data[i];
@@ -791,18 +752,15 @@ async function loadSchedule() {
         tr.appendChild(td);
       });
     });
-
     if (todayCol !== -1) highlightColumn(todayCol);
     globalScheduleRecords = scheduleRecords;
     globalStatPeriod = getStatPeriod();
     renderStats(scheduleRecords, globalStatPeriod);
-
   } catch(e) {
     console.error('加载排班表失败：', e);
     alert('排班表加载失败，请检查info.txt文件是否存在或格式是否正确');
   }
 }
-
 window.onload = loadSchedule;
 </script>
 </body>
