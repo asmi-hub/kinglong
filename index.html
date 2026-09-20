@@ -634,7 +634,7 @@ function showDetailModal(name, details, period) {
   } else {
     details.forEach(item => {
       const tr = document.createElement('tr');
-      const statusHtml = item.isRest ? '<span class="rest-tag">调休</span>' : '正常值班';
+      const statusHtml = item.isRest ? '<span class="rest-tag">调休</span>' : '正常';
       tr.innerHTML = `
         <td>${item.dateStr}</td>
         <td>${item.weekStr}</td>
