@@ -374,9 +374,9 @@ th {background:#f8f8f8;font-weight:bold;cursor:pointer;}
           <thead>
             <tr>
               <th>姓名</th>
-              <th>白班天数</th>
+              <th>早班天数</th>
               <th>夜班天数</th>
-              <th>白班时数</th>
+              <th>早班时数</th>
               <th>夜班时数</th>
               <th>上月剩余调休时数</th>
               <th>请假调休时数</th>
@@ -580,8 +580,8 @@ function calcStats(records, period) {
     const day = parseDayStr(dateStr, period.start);
     if (day < period.start || day > period.end) return;
     [
-      {name: dayBus, shift: '早班（大客）', type: '白班', hour: DAY_HOUR},
-      {name: dayLight, shift: '早班（轻客）', type: '白班', hour: DAY_HOUR}
+      {name: dayBus, shift: '早班（大客）', type: '早班', hour: DAY_HOUR},
+      {name: dayLight, shift: '早班（轻客）', type: '早班', hour: DAY_HOUR}
     ].forEach(item => {
       const { names, restNames } = splitNames(item.name);
       names.forEach(name => {
@@ -751,7 +751,7 @@ function showDetailModal(name, details, period) {
       tr.innerHTML = `
         <td>${item.dateStr}</td>
         <td>${item.weekStr}</td>
-        <td class="${item.shiftType === '白班' ? 'shift-type-day' : 'shift-type-night'}">${item.shiftType}</td>
+        <td class="${item.shiftType === '早班' ? 'shift-type-day' : 'shift-type-night'}">${item.shiftType}</td>
         <td>${item.shiftName}</td>
         <td>${statusHtml}</td>
       `;
