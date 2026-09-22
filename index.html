@@ -9,6 +9,7 @@
 /* ===================== 基础样式 ===================== */
 * {margin:0;padding:0;box-sizing:border-box;font-family:"Microsoft YaHei",sans-serif;}
 body {background:#f0f0f0;padding:10px;}
+
 /* ===================== 卡片布局样式 ===================== */
 .page-container {
   max-width:1500px;
@@ -244,7 +245,7 @@ th {background:#f8f8f8;font-weight:bold;cursor:pointer;}
     display:flex;
     justify-content:center;
     align-items:center;
-    z-index:9999;
+    z-index:9998;
     display:none;
 }
 .modal-content {
@@ -325,9 +326,23 @@ th {background:#f8f8f8;font-weight:bold;cursor:pointer;}
     border-radius:3px;
     margin-left:4px;
 }
+
+/* ==========鼠标跟随粒子特效CSS========== */
+#particleCanvas {
+  position:fixed;
+  top:0;
+  left:0;
+  width:100vw;
+  height:100vh;
+  pointer-events:none;
+  z-index:2147483647;
+}
 </style>
 </head>
 <body>
+<!--粒子画布-->
+<canvas id="particleCanvas"></canvas>
+
 <!-- 全局悬浮提示泡泡 -->
 <div class="tooltip-bubble" id="tooltipBubble"></div>
 
@@ -401,6 +416,61 @@ th {background:#f8f8f8;font-weight:bold;cursor:pointer;}
   </div>
 </div>
 <script>
+// =========鼠标跟随粒子特效JS=========
+(function(){
+  const canvas = document.getElementById('particleCanvas');
+  const ctx = canvas.getContext('2d');
+  let w, h;
+  let mouseX = 0, mouseY = 0;
+  const particles = [];
+  const maxParticles = 80;
+
+  function resize(){
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize',resize);
+
+  window.addEventListener('mousemove',(e)=>{
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    //鼠标移动的时候生成粒子
+    if(particles.length < maxParticles){
+      particles.push({
+        x:mouseX,
+        y:mouseY,
+        size:Math.random()*3+1,
+        speedX:(Math.random()-0.5)*1.2,
+        speedY:(Math.random()-0.5)*1.2,
+        life:1,
+        decay:0.012,
+        color:`hsla(${Math.random()*60+180},70%,60%,`
+      })
+    }
+  })
+
+  function loop(){
+    ctx.clearRect(0,0,w,h);
+    for(let i = particles.length-1; i>=0; i--){
+      const p = particles[i];
+      p.x += p.speedX;
+      p.y += p.speedY;
+      p.life -= p.decay;
+      if(p.life <= 0){
+        particles.splice(i,1);
+        continue;
+      }
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+      ctx.fillStyle = p.color + p.life + ")";
+      ctx.fill();
+    }
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+
 // tooltip 泡泡逻辑
 (function initTooltip(){
     const bubble = document.getElementById('tooltipBubble');
