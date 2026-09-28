@@ -4,47 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>消防控制室值班表</title>
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href=" https://asmi-hub.github.io/kinglong/favicon.svg " type="image/svg+xml">
 <style>
 /* ===================== 基础样式 ===================== */
 * {margin:0;padding:0;box-sizing:border-box;font-family:"Microsoft YaHei",sans-serif;}
 body {background:#f0f0f0;padding:10px;}
-
 /* ===================== 卡片布局样式 ===================== */
-.page-container {
-  max-width:1500px;
-  margin:0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-.card {
-  background:#fff;
-  border-radius:8px;
-  box-shadow:0 2px 12px rgba(0,0,0,0.1);
-  overflow:hidden;
-  padding: 0;
-}
+.page-container { max-width:1500px; margin:0 auto; display: flex; flex-direction: column; gap: 15px;}
+.card { background:#fff; border-radius:8px; box-shadow:0 2px 12px rgba(0,0,0,0.1); overflow:hidden; padding: 0;}
 /* ===================== 值班表卡片样式 ===================== */
-.schedule-card h1 {
-  background:#82c341;
-  color:#fff;
-  text-align:center;
-  padding:12px 15px;
-  font-size:20px;
-  margin:0;
-}
+.schedule-card h1 { background:#82c341; color:#fff; text-align:center; padding:12px 15px; font-size:20px; margin:0;}
 .table-wrapper {overflow-x:auto;scroll-behavior:smooth;}
 table {width:100%;border-collapse:collapse;}
 /* PC端单元格样式 */
-th,td {
-    border:1px solid #ddd;
-    padding:8px 6px;
-    text-align:center;
-    min-width:120px;
-    white-space:normal;
-    font-size:13px;
-}
+th,td { border:1px solid #ddd; padding:8px 6px; text-align:center; min-width:120px; white-space:normal; font-size:13px;}
 th {background:#f8f8f8;font-weight:bold;cursor:pointer;}
 .date-header {background:#ffd966;font-weight:bold;}
 .date-header.active-highlight {font-weight:bold!important;background:#ffc107;}
@@ -56,296 +29,82 @@ th {background:#f8f8f8;font-weight:bold;cursor:pointer;}
 .lunar-date.weekend {color:#c0392b;font-weight:600;}
 .today-marker {color:#2ecc71;margin-right:4px;}
 .rest-person {color:#c0392b;font-weight:normal!important;}
-.today-cell-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    line-height: 1.4;
-}
-.today-cell-shift {
-    font-size:11px;
-    color:#666;
-    margin-bottom:3px;
-    font-weight:bold;
-}
-.today-cell-name {
-    font-size:12px;
-}
+.today-cell-content { display: flex; flex-direction: column; align-items: center; line-height: 1.4;}
+.today-cell-shift { font-size:11px; color:#666; margin-bottom:3px; font-weight:bold;}
+.today-cell-name { font-size:12px;}
 .first-person {color:#0066cc;}
 .rest-name-person {color:#c0392b;}
 /* ===================== 移动端响应式样式 ===================== */
 @media (max-width:768px) {
-    th,td {
-        min-width:100px;
-        padding:8px 4px;
-        font-size:12px;
-        white-space:normal;
-    }
-    .today-cell-shift {
-        font-size:10px;
-    }
-    .today-cell-name {
-        font-size:12px;
-    }
-    .stat-table {
-        min-width: 950px;
-        font-size: 11px;
-    }
-    .stat-table th, .stat-table td {
-        padding: 5px 4px;
-    }
-    .rest-hour-input, .overtime-hour-input, .fullwork-day-input {
-        width: 60px!important;
-        font-size:11px!important;
-        padding: 2px 4px!important;
-    }
-    .modal-content {
-        width: 95%!important;
-        max-width: none!important;
-        max-height: 90vh!important;
-    }
+ th,td { min-width:100px; padding:8px 4px; font-size:12px; white-space:normal; }
+ .today-cell-shift { font-size:10px; }
+ .today-cell-name { font-size:12px; }
+ .stat-table { min-width: 950px; font-size: 11px; }
+ .stat-table th, .stat-table td { padding: 5px 4px; }
+ .rest-hour-input, .overtime-hour-input, .fullwork-day-input { width: 60px!important; font-size:11px!important; padding: 2px 4px!important; }
+ .modal-content { width: 95%!important; max-width: none!important; max-height: 90vh!important; overflow-y:auto; }
 }
 /* ===================== 值班统计卡片样式 ===================== */
-.stat-card {
-  padding: 0;
-}
-.stat-card-header {
-  background:#4285f4;
-  color:#fff;
-  text-align:center;
-  padding:12px 15px;
-  font-size:18px;
-  font-weight:bold;
-}
-.stat-period {
-    font-size:11px;
-    color:#666;
-    text-align:center;
-    margin-bottom:8px;
-}
-.stat-table-wrapper {
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 8px;
-}
-.stat-table {
-    min-width: 900px;
-    border-collapse:collapse;
-    font-size:11px;
-    width: 100%;
-}
-.stat-table th,
-.stat-table td {
-    border:1px solid #ccc;
-    padding:5px 4px;
-    text-align:center;
-    white-space: nowrap;
-}
-.stat-table th {
-    background:#f2f2f2;
-}
-.stat-name-cell {
-    cursor:pointer;
-    color:#0066cc;
-    text-decoration: none;
-    border-bottom: 1px solid transparent;
-    transition: all 0.2s ease;
-}
-.stat-name-cell.has-rest {
-    color:#c0392b;
-}
-.stat-name-cell:hover {
-    color:#004999;
-    border-bottom: 1px solid #004999;
-}
-.stat-name-cell.has-rest:hover {
-    color:#a02626;
-}
-.rest-hour-input, .overtime-hour-input, .fullwork-day-input {
-    width: 70px;
-    padding: 3px 5px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    text-align: center;
-    font-size: 12px;
-    font-weight: 600;
-}
-.rest-hour-input {
-    color: #c0392b;
-    background: #fef5f5;
-}
-.overtime-hour-input {
-    color: #27ae60;
-    background: #f5fdf5;
-}
-.fullwork-day-input {
-    color: #8e44ad;
-    background: #f9f5fd;
-}
-.rest-hour-input::-webkit-outer-spin-button,
-.rest-hour-input::-webkit-inner-spin-button,
-.overtime-hour-input::-webkit-outer-spin-button,
-.overtime-hour-input::-webkit-inner-spin-button,
-.fullwork-day-input::-webkit-outer-spin-button,
-.fullwork-day-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-.rest-hour-input, .overtime-hour-input, .fullwork-day-input {
-    -moz-appearance: textfield;
-}
-.rest-hour-input:focus {
-    outline: none;
-    border-color: #c0392b;
-    box-shadow: 0 0 0 2px rgba(192, 57, 43, 0.1);
-}
-.overtime-hour-input:focus {
-    outline: none;
-    border-color: #27ae60;
-    box-shadow: 0 0 0 2px rgba(39, 174, 96, 0.1);
-}
-.fullwork-day-input:focus {
-    outline: none;
-    border-color: #8e44ad;
-    box-shadow: 0 0 0 2px rgba(142, 68, 173, 0.1);
-}
-.total-hour-cell, .overtime-total-cell {
-    font-weight: 700;
-    color: #2c3e50;
-}
-.overtime-total-cell {
-    color: #e67e22;
-}
-.overtime-exceed-cell {
-    font-weight: 700;
-    color: #e74c3c;
-}
-/* ===================== 自定义泡泡tooltip ===================== */
-.tooltip-bubble{
-    position:absolute;
-    background:rgba(0,0,0,0.5);
-    color:#ffffff;
-    font-size:13px;
-    padding:6px 10px;
-    border-radius:8px;
-    pointer-events:none;
-    z-index:99999;
-    display:none;
-    white-space:nowrap;
-}
+.stat-card { padding: 0;}
+.stat-card-header { background:#4285f4; color:#fff; text-align:center; padding:12px 15px; font-size:18px; font-weight:bold;}
+.stat-period { font-size:11px; color:#666; text-align:center; margin-bottom:8px;}
+.stat-table-wrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 8px;}
+.stat-table { min-width: 900px; border-collapse:collapse; font-size:11px; width: 100%;}
+.stat-table th,.stat-table td { border:1px solid #ccc; padding:5px 4px; text-align:center; white-space: nowrap;}
+.stat-table th { background:#f2f2f2;}
+.stat-name-cell { cursor:pointer; color:#0066cc; text-decoration: none; border-bottom: 1px solid transparent; transition: all 0.2s ease;}
+.stat-name-cell.has-rest { color:#c0392b;}
+.stat-name-cell:hover { color:#004999; border-bottom: 1px solid #004999;}
+.rest-hour-input, .overtime-hour-input, .fullwork-day-input { width: 70px; padding: 3px 5px; border: 1px solid #ccc; border-radius: 4px; text-align: center; font-size: 12px; font-weight: 600;}
+.rest-hour-input { color: #c0392b; background: #fef5f5;}
+.overtime-hour-input { color: #27ae60; background: #f5fdf5;}
+.fullwork-day-input { color: #8e44ad; background: #f9f5fd;}
+.rest-hour-input::-webkit-outer-spin-button,.rest-hour-input::-webkit-inner-spin-button,.overtime-hour-input::-webkit-outer-spin-button,.overtime-hour-input::-webkit-inner-spin-button,.fullwork-day-input::-webkit-outer-spin-button,.fullwork-day-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0;}
+.rest-hour-input, .overtime-hour-input, .fullwork-day-input { -moz-appearance: textfield;}
+.rest-hour-input:focus { outline: none; border-color: #c0392b; box-shadow: 0 0 0 2px rgba(192, 57, 43, 0.1);}
+.overtime-hour-input:focus { outline: none; border-color: #27ae60; box-shadow: 0 0 0 2px rgba(39, 174, 96, 0.1);}
+.fullwork-day-input:focus { outline: none; border-color: #8e44ad; box-shadow: 0 0 0 2px rgba(142, 68, 173, 0.1);}
+.total-hour-cell, .overtime-total-cell { font-weight: 700; color: #2c3e50;}
+.overtime-total-cell { color: #e67e22;}
+/* ===================== 悬浮提示气泡 ===================== */
+.tooltip-bubble{ position:absolute; background:rgba(0,0,0,0.5); color:#ffffff; font-size:13px; padding:6px 10px; border-radius:8px; pointer-events:none; z-index:99999; display:none; white-space:nowrap;}
 /* ===================== 弹窗样式 ===================== */
-.modal-overlay {
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:rgba(0,0,0,0.5);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    z-index:9998;
-    display:none;
-}
-.modal-content {
-    background:#fff;
-    border-radius:8px;
-    width: 90%;
-    max-width: 900px;
-    max-height: 90vh;
-    overflow-y:auto;
-    padding:25px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-}
-.modal-header {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:20px;
-    padding-bottom:15px;
-    border-bottom:1px solid #eee;
-}
-.modal-title {
-    font-size:20px;
-    font-weight:bold;
-    color:#333;
-}
-.modal-close {
-    width:35px;
-    height:35px;
-    line-height:35px;
-    text-align:center;
-    border-radius:50%;
-    background:#f5f5f5;
-    cursor:pointer;
-    font-size:18px;
-    color:#666;
-    transition: all 0.2s;
-}
-.modal-close:hover {
-    background:#eee;
-    color:#333;
-}
-.modal-body {
-    font-size:14px;
-}
-.detail-table {
-    width:100%;
-    border-collapse:collapse;
-    margin-top:15px;
-}
-.detail-table th,
-.detail-table td {
-    border:1px solid #ddd;
-    padding:10px 12px;
-    text-align:center;
-}
-.detail-table th {
-    background:#f8f8f8;
-    font-size:14px;
-    font-weight: bold;
-}
-.detail-table td {
-    font-size:13px;
-}
-.shift-type-day {
-    color:#27ae60;
-    font-weight:bold;
-}
-.shift-type-night {
-    color:#e74c3c;
-    font-weight:bold;
-}
-.rest-tag {
-    display:inline-block;
-    background:#ffebee;
-    color:#c0392b;
-    font-size:13px;
-    padding:3px 7px;
-    border-radius:3px;
-    margin-left:4px;
-}
-
-/* ==========鼠标跟随粒子特效CSS========== */
-#particleCanvas {
-  position:fixed;
-  top:0;
-  left:0;
-  width:100vw;
-  height:100vh;
-  pointer-events:none;
-  z-index:2147483647;
-}
+.modal-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; justify-content:center; align-items:center; z-index:9998; display:none;}
+.modal-content { background:#fff; border-radius:8px; width: 90%; max-width: 900px; max-height: 90vh; overflow-y:auto; padding:25px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);}
+.modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding-bottom:15px; border-bottom:1px solid #eee;}
+.modal-title { font-size:20px; font-weight:bold; color:#333;}
+.modal-close { width:35px; height:35px; line-height:35px; text-align:center; border-radius:50%; background:#f5f5f5; cursor:pointer; font-size:18px; color:#666; transition: all 0.2s;}
+.modal-close:hover { background:#eee; color:#333;}
+.modal-body { font-size:14px;}
+.detail-table { width:100%; border-collapse:collapse; margin-top:15px;}
+.detail-table th,.detail-table td { border:1px solid #ddd; padding:10px 12px; text-align:center;}
+.detail-table th { background:#f8f8f8; font-size:14px; font-weight: bold;}
+.detail-table td { font-size:13px;}
+.shift-type-day { color:#27ae60; font-weight:bold;}
+.shift-type-night { color:#e74c3c; font-weight:bold;}
+.rest-tag { display:inline-block; background:#ffebee; color:#c0392b; font-size:13px; padding:3px 7px; border-radius:3px; margin-left:4px;}
+/* ===================== 备注栏 ===================== */
+.remark-block { margin-top:18px; padding-top:15px; border-top:1px dashed #ddd;}
+.remark-label { font-size:14px; font-weight:bold; color:#333; margin-bottom:8px; display:block;}
+.remark-textarea { width:100%; min-height:80px; padding:10px 12px; border:1px solid #ccc; border-radius:6px; font-size:14px; line-height:1.6; resize:vertical; font-family:"Microsoft YaHei",sans-serif; box-sizing:border-box;}
+.remark-textarea:focus { outline:none; border-color:#4285f4; box-shadow:0 0 0 2px rgba(66,133,244,0.12);}
+.remark-actions { margin-top:10px; display:flex; align-items:center; gap:12px;}
+.remark-submit { background:#4285f4; color:#fff; border:none; padding:8px 22px; border-radius:5px; font-size:14px; cursor:pointer; transition:background 0.2s;}
+.remark-submit:hover { background:#3367d6;}
+.remark-submit:disabled { background:#a8c0f0; cursor:not-allowed;}
+.remark-status { font-size:13px; color:#888;}
+.remark-status.ok { color:#27ae60;}
+.remark-status.err { color:#e74c3c;}
+.remark-helper { font-size:12px; color:#999; margin-top:6px;}
+/* ==========鼠标粒子特效========== */
+#particleCanvas { position:fixed; top:0; left:0; width:100vw; height:100vh; pointer-events:none; z-index:2147483647;}
 </style>
 </head>
 <body>
 <!--粒子画布-->
 <canvas id="particleCanvas"></canvas>
-
-<!-- 全局悬浮提示泡泡 -->
+<!-- 悬浮提示气泡 -->
 <div class="tooltip-bubble" id="tooltipBubble"></div>
-
 <div class="page-container">
   <div class="card schedule-card">
     <h1>消防控制室值班表</h1>
@@ -367,28 +126,26 @@ th {background:#f8f8f8;font-weight:bold;cursor:pointer;}
   </div>
   <div class="card stat-card">
     <div class="stat-card-header">人员值班时长统计</div>
-    <div class="stat-section">
-      <div class="stat-period" id="statPeriod"></div>
-      <div class="stat-table-wrapper">
-        <table class="stat-table">
-          <thead>
-            <tr>
-              <th>姓名</th>
-              <th>早班天数</th>
-              <th>夜班天数</th>
-              <th>早班时数</th>
-              <th>夜班时数</th>
-              <th>上月剩余调休时数</th>
-              <th>本月调休时数</th>
-              <th>满勤天数</th>
-              <th>总工时</th>
-              <th>本月加班时数</th>
-              <th>本月剩余调休时数</th>
-            </tr>
-          </thead>
-          <tbody id="statBody"></tbody>
-        </table>
-      </div>
+    <div class="stat-period" id="statPeriod"></div>
+    <div class="stat-table-wrapper">
+      <table class="stat-table">
+        <thead>
+          <tr>
+            <th>姓名</th>
+            <th>早班天数</th>
+            <th>夜班天数</th>
+            <th>早班时数</th>
+            <th>夜班时数</th>
+            <th>上月剩余调休时数</th>
+            <th>本月调休时数</th>
+            <th>满勤天数</th>
+            <th>总工时</th>
+            <th>本月加班时数</th>
+            <th>本月剩余调休时数</th>
+          </tr>
+        </thead>
+        <tbody id="statBody"></tbody>
+      </table>
     </div>
   </div>
 </div>
@@ -412,303 +169,346 @@ th {background:#f8f8f8;font-weight:bold;cursor:pointer;}
         </thead>
         <tbody id="detailTableBody"></tbody>
       </table>
+      <!-- 备注栏 -->
+      <div class="remark-block">
+        <label class="remark-label" for="remarkInput">备注（连班情况说明，提交后保存）</label>
+        <textarea id="remarkInput" class="remark-textarea" placeholder="例如：2026-06-01 08:00-19:45 加班2小时……"></textarea>
+        <div class="remark-actions">
+          <button type="button" id="remarkSubmit" class="remark-submit">提交</button>
+          <span id="remarkStatus" class="remark-status"></span>
+        </div>
+        <div class="remark-helper">提交成功保存在本浏览器；刷新页面或重新打开弹窗自动加载备注。</div>
+      </div>
     </div>
   </div>
 </div>
 <script>
-// =========鼠标跟随粒子特效JS=========
-(function(){
-  const canvas = document.getElementById('particleCanvas');
-  const ctx = canvas.getContext('2d');
-  let w, h;
-  let mouseX = 0, mouseY = 0;
-  const particles = [];
-  const maxParticles = 80;
+/* ============================================================
+   消防控制室值班表 · 前端脚本
+   职责：加载值班数据 → 渲染值班表 → 人员统计 → 详情与备注
+   ============================================================ */
 
-  function resize(){
-    w = canvas.width = window.innerWidth;
-    h = canvas.height = window.innerHeight;
-  }
-  resize();
-  window.addEventListener('resize',resize);
+/* ---------- 常量与班次配置 ---------- */
+const DAY_HOUR = 8;               // 早班工时
+const NIGHT_HOUR = 15;            // 夜班工时
+const FULLWORK_HOUR_PER_DAY = 8;  // 满勤每日工时
+const OVERTIME_LIMIT = 48;        // 加班时数上限
+const RELOAD_MS = 300000;         // 页面自动刷新间隔
 
-  window.addEventListener('mousemove',(e)=>{
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-    //鼠标移动的时候生成粒子
-    if(particles.length < maxParticles){
-      particles.push({
-        x:mouseX,
-        y:mouseY,
-        size:Math.random()*3+1,
-        speedX:(Math.random()-0.5)*1.2,
-        speedY:(Math.random()-0.5)*1.2,
-        life:1,
-        decay:0.012,
-        color:`hsla(${Math.random()*60+180},70%,60%,`
-      })
-    }
-  })
+// 班次顺序（对应值班表 4 行）
+//   label    : 班次名   type: 早班/夜班   hour: 班次工时
+//   blueRule : 人名蓝色规则 —— none: 不标蓝 | star: * 开头者标蓝 | first: 首位非休息者标蓝
+const SHIFTS = [
+  { label: '早班（大客）', type: '早班', hour: DAY_HOUR,   blueRule: 'star'  },
+  { label: '早班（轻客）', type: '早班', hour: DAY_HOUR,   blueRule: 'none'  },
+  { label: '晚班（大客）', type: '夜班', hour: NIGHT_HOUR, blueRule: 'first' },
+  { label: '晚班（轻客）', type: '夜班', hour: NIGHT_HOUR, blueRule: 'none'  },
+];
 
-  function loop(){
-    ctx.clearRect(0,0,w,h);
-    for(let i = particles.length-1; i>=0; i--){
-      const p = particles[i];
-      p.x += p.speedX;
-      p.y += p.speedY;
-      p.life -= p.decay;
-      if(p.life <= 0){
-        particles.splice(i,1);
-        continue;
-      }
-      ctx.beginPath();
-      ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
-      ctx.fillStyle = p.color + p.life + ")";
-      ctx.fill();
-    }
-    requestAnimationFrame(loop);
-  }
-  loop();
-})();
+/* ---------- 全局状态 ---------- */
+let scheduleRecords = [];    // 值班原始数据
+let statPeriod = {};         // 当前统计周期
+let manualRestHours = {};    // 手工填写的调休时数（按人）
+let manualOvertimeHours = {};// 手工填写的上月剩余调休时数
+let manualFullworkDays = {}; // 手工填写的满勤天数
+let remarkCtx = null;        // 备注弹窗上下文
+let blueOn = false;          // 手动全表蓝色渲染开关
 
-// tooltip 泡泡逻辑
-(function initTooltip(){
-    const bubble = document.getElementById('tooltipBubble');
-    document.addEventListener('mouseover',function(e){
-        const el = e.target.closest('.stat-name-cell');
-        if(el){
-            bubble.textContent = "单击名字  可查看值班详情！";
-            bubble.style.display = 'block';
-            bubble.style.left = (e.pageX + 12) + 'px';
-            bubble.style.top = (e.pageY + 12) + 'px';
-        }
-    });
-    document.addEventListener('mousemove',function(e){
-        if(bubble.style.display === 'block'){
-            bubble.style.left = (e.pageX + 12) + 'px';
-            bubble.style.top = (e.pageY + 12) + 'px';
-        }
-    });
-    document.addEventListener('mouseout',function(e){
-        const el = e.target.closest('.stat-name-cell');
-        if(el){
-            bubble.style.display = 'none';
-        }
-    });
-})();
+/* ---------- 时间工具 ---------- */
+const pad2 = n => String(n).padStart(2, '0');
+const fmtDate = dt => `${dt.getFullYear()}-${pad2(dt.getMonth() + 1)}-${pad2(dt.getDate())}`;
+const todayText = () => { const t = new Date(); return `${t.getMonth() + 1}月${t.getDate()}日`; };
 
-setInterval(() => location.reload(), 300000);
-const DAY_HOUR = 8;
-const NIGHT_HOUR = 15;
-const FULLWORK_HOUR_PER_DAY = 8;
-const OVERTIME_LIMIT = 48;
-let globalScheduleRecords = [];
-let globalStatPeriod = {};
-let manualRestHours = {};
-let manualOvertimeHours = {};
-let manualFullworkDays = {};
+// 统计周期：上月26日 ~ 本月25日（当月未到25日时截止到当日）
 function getStatPeriod() {
   const now = new Date();
-  const y = now.getFullYear();
-  const m = now.getMonth();
-  const d = now.getDate();
-  let start = new Date(y, m - 1, 26);
-  let end;
-  if (d <= 25) {
-    end = new Date(y, m, d);
-  } else {
-    end = new Date(y, m, 25);
+  const start = new Date(now.getFullYear(), now.getMonth() - 1, 26);
+  const end = now.getDate() <= 25
+    ? new Date(now.getFullYear(), now.getMonth(), now.getDate())
+    : new Date(now.getFullYear(), now.getMonth(), 25);
+  return { start, end, startStr: fmtDate(start), endStr: fmtDate(end) };
+}
+
+// 解析"8月26日"；跨年时 26号及以上归 start 年份、25 及以下归 end 年份
+function parseDayStr(s, period) {
+  const [m, d] = s.replace('日', '').split('月').map(Number);
+  return new Date((d >= 26 ? period.start : period.end).getFullYear(), m - 1, d);
+}
+
+/* ---------- 人名渲染 ---------- */
+// 拆分名单（"、"分隔），识别 $休息 与 *首位标记（name 保留 *，渲染时按规则处理）
+function parseNameList(raw) {
+  return raw.split('、').map(p => p.trim()).filter(Boolean).map(p => ({
+    rest: p.startsWith('$'),
+    star: p.startsWith('*'),
+    name: p.startsWith('$') ? p.slice(1).trim() : p.trim(),
+  }));
+}
+
+// 渲染名单：$休息标红；按 blueRule 标蓝（none=不标蓝, star=*开头去*标蓝, first=首位非休息标蓝并保留*）
+function renderNames(raw, blueRule = 'none') {
+  if (!raw || !raw.trim()) return raw;
+  const list = parseNameList(raw);
+  const firstNormal = blueRule === 'first' ? list.findIndex(p => !p.rest) : -1;
+  return list.map((p, i) => {
+    if (p.rest) return `<span class="rest-name-person">${p.name}</span>`;
+    if (blueRule === 'none') return p.name.replace(/^\*/, '');
+    if (blueRule === 'star') return p.star ? `<span class="first-person">${p.name.slice(1)}</span>` : p.name;
+    return i === firstNormal ? `<span class="first-person">${p.name}</span>` : p.name;
+  }).join('、');
+}
+
+/* ---------- 值班表渲染与高亮 ---------- */
+function scrollToColumn(el) {
+  const wrap = document.getElementById('tableWrapper');
+  wrap.scrollLeft = el.offsetLeft - wrap.clientWidth / 2 + el.offsetWidth / 2;
+}
+
+function clearAllHighlight() {
+  document.querySelectorAll('.date-header').forEach(h => {
+    h.classList.remove('active-highlight');
+    h.innerHTML = h.innerHTML.replace('<span class="today-marker">✔</span>', '');
+  });
+  document.querySelectorAll('td.cell-highlight').forEach(c => {
+    c.classList.remove('cell-highlight', 'morning-shift', 'evening-shift');
+    if (c.dataset.originalContent) c.innerHTML = renderNames(c.dataset.originalContent, 'none');
+  });
+}
+
+// 高亮某一日期列（今日列默认调用，点击表头列也可触发）
+function highlightColumn(colIndex) {
+  const headerRow = document.getElementById('header-row');
+  const rows = document.querySelectorAll('tbody tr');
+  const th = headerRow.children[colIndex];
+  if (th) {
+    th.classList.add('active-highlight');
+    th.innerHTML = '<span class="today-marker">✔</span>' + th.innerHTML.replace('<span class="today-marker">✔</span>', '');
+    scrollToColumn(th);
   }
-  function fmt(dt) {
-    return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,0)}-${String(dt.getDate()).padStart(2,0)}`;
+  rows.forEach((tr, i) => {
+    const td = tr.children[colIndex];
+    if (!td || !td.dataset.originalContent) return;
+    td.classList.add('cell-highlight', i < 2 ? 'morning-shift' : 'evening-shift');
+    const shift = SHIFTS[i];
+    td.innerHTML = `
+      <div class="today-cell-content">
+        <div class="today-cell-shift">${shift.label}</div>
+        <div class="today-cell-name">${renderNames(td.dataset.originalContent, shift.blueRule)}</div>
+      </div>`;
+  });
+}
+
+// 手动蓝色渲染：对未被高亮的普通列，按 blue 决定是否按蓝色规则渲染人名（今日列始终不变）
+function renderColumns(blue) {
+  const headerRow = document.getElementById('header-row');
+  const rows = document.querySelectorAll('tbody tr');
+  for (let col = 1; col < headerRow.children.length; col++) {
+    rows.forEach((tr, i) => {
+      const td = tr.children[col];
+      if (!td || !td.dataset.originalContent || td.classList.contains('cell-highlight')) return;
+      td.innerHTML = renderNames(td.dataset.originalContent, blue ? SHIFTS[i].blueRule : 'none');
+    });
   }
-  return { 
-    start, 
-    end, 
-    startStr: fmt(start), 
-    endStr: fmt(end),
-    startDate: start,
-    endDate: end
-  };
 }
-function parseDayStr(s, baseDate) {
-  const [m, d] = s.replace('日','').split('月').map(Number);
-  const y = baseDate.getFullYear();
-  return new Date(y, m-1, d);
+
+/* ---------- 数据加载与表格构建 ---------- */
+// 解析同目录 info.txt（格式：每6行为一组：日期/星期/大客早班/轻客早班/大客晚班/轻客晚班）
+function parseScheduleText(text) {
+  text = String(text || '').replace(/^\uFEFF/, '').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  const lines = text.split('\n')
+    .map(l => l.replace(/[\uFEFF\u200B\u200C\u200D]/g, '').trim())
+    .filter(Boolean);
+  const records = [];
+  const getPerson = (s, p) => s.slice(p.length).trim();
+  for (let i = 0; i + 5 < lines.length; i += 6) {
+    records.push({
+      dateStr: lines[i],
+      weekStr: lines[i + 1],
+      dayBus: getPerson(lines[i + 2], '大客（早班）'),
+      dayLight: getPerson(lines[i + 3], '轻客（早班）'),
+      nightBus: getPerson(lines[i + 4], '大客（晚班）'),
+      nightLight: getPerson(lines[i + 5], '轻客（晚班）'),
+    });
+  }
+  return records;
 }
-function cleanName(str) {
-  if (!str) return '';
-  return str.replace(/<(?!rest\/?)[^>]+>/g, '').trim();
+
+async function loadSchedule() {
+  try {
+    const txt = await (await fetch('info.txt')).text();
+    const list = parseScheduleText(txt);
+    const headerRow = document.getElementById('header-row');
+    const tbodyRows = document.querySelectorAll('tbody tr');
+    if (!headerRow) { alert('DOM错误：找不到header-row'); return; }
+    if (!tbodyRows.length) { alert('DOM错误：找不到tbody行'); return; }
+
+    const today = todayText();
+    let todayCol = -1;
+    scheduleRecords = [];
+    list.forEach((rec, idx) => {
+      const { dateStr, weekStr, dayBus, dayLight, nightBus, nightLight } = rec;
+      const col = idx + 1;
+      if (dateStr === today) todayCol = col;
+      scheduleRecords.push({ dateStr, weekStr, dayBus, dayLight, nightBus, nightLight });
+
+      const th = document.createElement('th');
+      th.className = 'date-header';
+      const weekendClass = weekStr.includes('星期六') || weekStr.includes('星期日')
+        ? 'lunar-date weekend' : 'lunar-date';
+      th.innerHTML = `${dateStr}<br><span class="${weekendClass}">${weekStr}</span>`;
+      th.onclick = () => { clearAllHighlight(); highlightColumn(col); };
+      headerRow.appendChild(th);
+
+      const data = [dayBus, dayLight, nightBus, nightLight];
+      tbodyRows.forEach((tr, i) => {
+        const td = document.createElement('td');
+        let cell = data[i];
+        if (cell.includes('<rest>')) {
+          cell = cell.replace(/<rest>(.*?)<\/rest>/g, '<span class="rest-person">[$1 休息]</span>');
+        }
+        td.innerHTML = renderNames(cell, 'none');
+        td.dataset.originalContent = data[i];
+        tr.appendChild(td);
+      });
+    });
+    if (todayCol !== -1) highlightColumn(todayCol);
+
+    statPeriod = getStatPeriod();
+    await loadSavedStatData(statPeriod.startStr, statPeriod.endStr);
+    renderStats(scheduleRecords, statPeriod);
+  } catch (e) {
+    console.error('加载值班表异常：', e);
+    alert('加载值班表失败：' + e.message);
+  }
 }
+
+/* ---------- 人员统计 ---------- */
+// 拆分名单用于统计：识别 <rest> 休息块与 $ 休息
 function splitNames(str) {
-  const cleanStr = cleanName(str);
-  const names = [];
-  const restNames = [];
-  if (cleanStr.includes('<rest>')) {
-    const restMatch = cleanStr.match(/<rest>(.*?)<\/rest>/);
-    if (restMatch && restMatch[1]) {
-      restMatch[1].split(/、|，|,/)
-        .map(n => n.trim())
-        .filter(n => n)
-        .forEach(n => restNames.push(n));
-    }
-    const normalStr = cleanStr.replace(/<rest>.*?<\/rest>/g, '');
-    const parts = normalStr.split(/、|，|,/).map(n => n.trim()).filter(n => n);
-    parts.forEach(p=>{
-      if(p.startsWith('[休]')){
-        restNames.push(p.slice(3).trim());
-      }else if(p){
-        names.push(p);
-      }
-    })
+  const clean = (str || '').replace(/<(?!rest\/?)[^>]+>/g, '').trim();
+  const names = [], restNames = [];
+  const pushPart = p => {
+    p = p.trim();
+    if (!p) return;
+    if (p.startsWith('$')) restNames.push(p.slice(1).trim());
+    else names.push(p.startsWith('*') ? p.slice(1).trim() : p.trim()); // 去除*，实现同名合并
+  };
+  if (clean.includes('<rest>')) {
+    const m = clean.match(/<rest>(.*?)<\/rest>/);
+    if (m && m[1]) m[1].split(/、|，|,/).map(n => n.trim()).filter(Boolean).forEach(n => restNames.push(n));
+    clean.replace(/<rest>.*?<\/rest>/g, '').split(/、|，|,/).forEach(pushPart);
   } else {
-    const parts = cleanStr.split(/、|，|,/).map(n => n.trim()).filter(n => n);
-    parts.forEach(p=>{
-      if(p.startsWith('[休]')){
-        restNames.push(p.slice(3).trim());
-      }else if(p){
-        names.push(p);
-      }
-    })
+    clean.split(/、|，|,/).forEach(pushPart);
   }
   return { names, restNames };
 }
+
+// 计算各人员值班统计（早/夜班次数、工时、调休时数、明细）
 function calcStats(records, period) {
   const map = {};
+  const ensure = name => map[name] || (map[name] = { day: 0, night: 0, restHour: 0, details: [] });
   records.forEach(rec => {
     const { dateStr, weekStr, dayBus, dayLight, nightBus, nightLight } = rec;
-    const day = parseDayStr(dateStr, period.start);
-    if (day < period.start || day > period.end) return;
-    [
-      {name: dayBus, shift: '早班（大客）', type: '早班', hour: DAY_HOUR},
-      {name: dayLight, shift: '早班（轻客）', type: '早班', hour: DAY_HOUR}
-    ].forEach(item => {
-      const { names, restNames } = splitNames(item.name);
+    const d = parseDayStr(dateStr, period);
+    if (d < period.start || d > period.end) return;
+    const cells = [dayBus, dayLight, nightBus, nightLight];
+    SHIFTS.forEach((shift, i) => {
+      const { names, restNames } = splitNames(cells[i]);
       names.forEach(name => {
-        if (!map[name]) map[name] = { day:0, night:0, restHour:0, details: [] };
-        map[name].day += 1; 
-        map[name].details.push({ dateStr, weekStr, shiftType: item.type, shiftName: item.shift, isRest: false });
+        const o = ensure(name);
+        if (shift.type === '早班') o.day++; else o.night++;
+        o.details.push({ dateStr, weekStr, shiftType: shift.type, shiftName: shift.label, isRest: false });
       });
       restNames.forEach(name => {
-        if (!map[name]) map[name] = { day:0, night:0, restHour:0, details: [] };
-        map[name].restHour += item.hour; 
-        map[name].details.push({ dateStr, weekStr, shiftType: item.type, shiftName: item.shift, isRest: true });
-      });
-    });
-    [
-      {name: nightBus, shift: '晚班（大客）', type: '夜班', hour: NIGHT_HOUR},
-      {name: nightLight, shift: '晚班（轻客）', type: '夜班', hour: NIGHT_HOUR}
-    ].forEach(item => {
-      const { names, restNames } = splitNames(item.name);
-      names.forEach(name => {
-        if (!map[name]) map[name] = { day:0, night:0, restHour:0, details: [] };
-        map[name].night += 1; 
-        map[name].details.push({ dateStr, weekStr, shiftType: item.type, shiftName: item.shift, isRest: false });
-      });
-      restNames.forEach(name => {
-        if (!map[name]) map[name] = { day:0, night:0, restHour:0, details: [] };
-        map[name].restHour += item.hour; 
-        map[name].details.push({ dateStr, weekStr, shiftType: item.type, shiftName: item.shift, isRest: true });
+        const o = ensure(name);
+        // $ 标记的调休班次同样计入早班/夜班天数（调休时数由人工填写，系统不自动扣减）
+        if (shift.type === '早班') o.day++; else o.night++;
+        o.restHour += shift.hour;
+        o.details.push({ dateStr, weekStr, shiftType: shift.type, shiftName: shift.label, isRest: true });
       });
     });
   });
-  const list = Object.entries(map).map(([name, o]) => ({
-    name,
-    dayCnt: parseFloat(o.day.toFixed(1)),
-    nightCnt: parseFloat(o.night.toFixed(1)),
-    dayH: parseFloat((o.day * DAY_HOUR).toFixed(1)),
-    nightH: parseFloat((o.night * NIGHT_HOUR).toFixed(1)),
-    restHour: parseFloat(o.restHour.toFixed(1)),
-    details: o.details.sort((a,b) => {
-      const d1 = parseDayStr(a.dateStr, globalStatPeriod.start);
-      const d2 = parseDayStr(b.dateStr, globalStatPeriod.start);
-      return d1 - d2;
-    })
-  }));
-  return { list };
+  return {
+    list: Object.entries(map).map(([name, o]) => ({
+      name,
+      dayCnt: +o.day.toFixed(1),
+      nightCnt: +o.night.toFixed(1),
+      dayH: +(o.day * DAY_HOUR).toFixed(1),
+      nightH: +(o.night * NIGHT_HOUR).toFixed(1),
+      restHour: +(o.restHour.toFixed(1)),
+      details: o.details.sort((a, b) => parseDayStr(a.dateStr, statPeriod) - parseDayStr(b.dateStr, statPeriod)),
+    })),
+  };
 }
-function updateTotalAndOvertimeHour(name, restHour, overtimeHour, fullworkDay, totalCell, overtimeCell, exceedCell, dayH, nightH) {
-  const rest = restHour === '请填写' || isNaN(restHour) ? 0 : parseFloat(restHour);
-  const over = overtimeHour === '请填写' || isNaN(overtimeHour) ? 0 : parseFloat(overtimeHour);
-  const fullworkDayNum = fullworkDay === '请填写' || isNaN(fullworkDay) ? 0 : parseFloat(fullworkDay);
-  const total = Math.max(0, dayH + nightH + over - rest);
-  let overtimeTotal = 0;
-  let overtimeExceed = 0;
-  if (fullworkDayNum > 0) {
-    const fullworkTotalHour = fullworkDayNum * FULLWORK_HOUR_PER_DAY;
-    const rawOvertime = Math.max(0, total - fullworkTotalHour);
+
+// 计算总工时与加班（加班 = 超过满勤工时的部分，上限 OVERTIME_LIMIT）
+function computeWorkHours(dayH, nightH, rest, over, fullworkDay) {
+  const restNum = (rest === '请填写' || isNaN(rest)) ? 0 : parseFloat(rest);
+  const overNum = (over === '请填写' || isNaN(over)) ? 0 : parseFloat(over);
+  const fullNum = (fullworkDay === '请填写' || isNaN(fullworkDay)) ? 0 : parseFloat(fullworkDay);
+  const total = Math.max(0, dayH + nightH + overNum - restNum);
+  let overtimeTotal = 0, overtimeExceed = 0;
+  if (fullNum > 0) {
+    const rawOvertime = Math.max(0, total - fullNum * FULLWORK_HOUR_PER_DAY);
     overtimeTotal = Math.min(rawOvertime, OVERTIME_LIMIT);
     overtimeExceed = Math.max(0, rawOvertime - OVERTIME_LIMIT);
   }
-  totalCell.textContent = total.toFixed(1);
-  overtimeCell.textContent = overtimeTotal.toFixed(1);
-  exceedCell.textContent = overtimeExceed.toFixed(1);
-  manualRestHours[name] = rest;
-  manualOvertimeHours[name] = over;
-  manualFullworkDays[name] = fullworkDayNum;
+  return { total, overtimeTotal, overtimeExceed };
 }
+
+// 生成统计行 HTML
+function buildStatRow(item) {
+  const tr = document.createElement('tr');
+  const nameClass = item.restHour > 0 ? 'stat-name-cell has-rest' : 'stat-name-cell';
+  tr.innerHTML = `
+    <td class="${nameClass}" data-name="${item.name}">${item.name}</td>
+    <td>${item.dayCnt}</td>
+    <td>${item.nightCnt}</td>
+    <td>${item.dayH}</td>
+    <td>${item.nightH}</td>
+    <td><input type="number" class="overtime-hour-input" value="${item.over}" min="0" placeholder="请填写"></td>
+    <td><input type="number" class="rest-hour-input" value="${item.rest}" min="0" placeholder="请填写"></td>
+    <td><input type="number" class="fullwork-day-input" value="${item.fullworkDay}" min="0" placeholder="请填写"></td>
+    <td class="total-hour-cell" id="total-${item.name}">${item.total.toFixed(1)}</td>
+    <td class="overtime-total-cell" id="overtime-${item.name}">${item.overtimeTotal.toFixed(1)}</td>
+    <td class="overtime-exceed-cell" id="exceed-${item.name}">${item.overtimeExceed.toFixed(1)}</td>`;
+  return tr;
+}
+
 function renderStats(records, period) {
-  document.getElementById('statPeriod').textContent = 
-    `周期：${period.startStr} 至 ${period.endStr} | 当月未到25号时，截止到当前日期`;
+  document.getElementById('statPeriod').textContent = `统计周期：${period.startStr} 至 ${period.endStr} | 当月未到25号时，截止到当日`;
   const tbody = document.getElementById('statBody');
   tbody.innerHTML = '';
-  const stats = calcStats(records, period);
-  const sorted = stats.list.map(item => {
+
+  const sorted = calcStats(records, period).list.map(item => {
     const rest = manualRestHours[item.name] === undefined ? '请填写' : manualRestHours[item.name];
     const over = manualOvertimeHours[item.name] === undefined ? '请填写' : manualOvertimeHours[item.name];
     const fullworkDay = manualFullworkDays[item.name] === undefined ? '请填写' : manualFullworkDays[item.name];
-    const restNum = rest === '请填写' ? 0 : parseFloat(rest);
-    const overNum = over === '请填写' ? 0 : parseFloat(over);
-    const fullworkDayNum = fullworkDay === '请填写' ? 0 : parseFloat(fullworkDay);
-    const total = Math.max(0, item.dayH + item.nightH + overNum - restNum);
-    let overtimeTotal = 0;
-    let overtimeExceed = 0;
-    if (fullworkDayNum > 0) {
-      const fullworkTotalHour = fullworkDayNum * FULLWORK_HOUR_PER_DAY;
-      const rawOvertime = Math.max(0, total - fullworkTotalHour);
-      overtimeTotal = Math.min(rawOvertime, OVERTIME_LIMIT);
-      overtimeExceed = Math.max(0, rawOvertime - OVERTIME_LIMIT);
-    }
+    const { total, overtimeTotal, overtimeExceed } = computeWorkHours(item.dayH, item.nightH, rest, over, fullworkDay);
     return { ...item, total, overtimeTotal, overtimeExceed, rest, over, fullworkDay };
-  }).sort((a, b) => {
-    if (b.total !== a.total) return b.total - a.total;
-    return a.name.localeCompare(b.name, 'zh-CN');
-  });
+  }).sort((a, b) => b.total !== a.total ? b.total - a.total : a.name.localeCompare(b.name, 'zh-CN'));
+
   sorted.forEach(item => {
-    const tr = document.createElement('tr');
-    const restVal = item.rest;
-    const overVal = item.over;
-    const fullworkDayVal = item.fullworkDay;
-    const nameCellClass = item.restHour > 0 ? 'stat-name-cell has-rest' : 'stat-name-cell';
-    tr.innerHTML = `
-      <td class="${nameCellClass}" data-name="${item.name}">${item.name}</td>
-      <td>${item.dayCnt}</td>
-      <td>${item.nightCnt}</td>
-      <td>${item.dayH}</td>
-      <td>${item.nightH}</td>
-      <td><input type="number" class="overtime-hour-input" value="${overVal}" min="0" placeholder="请填写"></td>
-      <td><input type="number" class="rest-hour-input" value="${restVal}" min="0" placeholder="请填写"></td>
-      <td><input type="number" class="fullwork-day-input" value="${fullworkDayVal}" min="0" placeholder="请填写"></td>
-      <td class="total-hour-cell" id="total-${item.name}">${item.total.toFixed(1)}</td>
-      <td class="overtime-total-cell" id="overtime-total-${item.name}">${item.overtimeTotal.toFixed(1)}</td>
-      <td class="overtime-exceed-cell" id="overtime-exceed-${item.name}">${item.overtimeExceed.toFixed(1)}</td>
-    `;
+    const tr = buildStatRow(item);
     tbody.appendChild(tr);
     tr.querySelector('.stat-name-cell').dataset.details = JSON.stringify(item.details);
   });
+
   document.querySelectorAll('.rest-hour-input, .overtime-hour-input, .fullwork-day-input').forEach(input => {
-    input.addEventListener('focus', function() {
-      if (this.value === '请填写') {
-        this.value = '';
-      }
-    });
-    input.addEventListener('blur', function() {
-      if (this.value === '') {
-        this.value = '请填写';
-      } else {
-        this.value = parseFloat(this.value).toFixed(1);
-      }
+    input.addEventListener('focus', function() { if (this.value === '请填写') this.value = ''; });
+    input.addEventListener('blur', async function() {
+      if (this.value === '') this.value = '请填写';
+      else this.value = parseFloat(this.value).toFixed(1);
       this.dispatchEvent(new Event('input'));
+      const tr = this.closest('tr');
+      const name = tr.querySelector('.stat-name-cell').dataset.name;
+      const last = tr.querySelector('.overtime-hour-input').value;
+      const month = tr.querySelector('.rest-hour-input').value;
+      const full = tr.querySelector('.fullwork-day-input').value;
+      await saveStatToDB(name, period.startStr, period.endStr,
+        last === '请填写' ? 0 : parseFloat(last),
+        month === '请填写' ? 0 : parseFloat(month),
+        full === '请填写' ? 0 : parseFloat(full));
     });
     input.addEventListener('input', function() {
       const tr = this.closest('tr');
@@ -718,191 +518,207 @@ function renderStats(records, period) {
       const rest = tr.querySelector('.rest-hour-input').value;
       const over = tr.querySelector('.overtime-hour-input').value;
       const fullworkDay = tr.querySelector('.fullwork-day-input').value;
-      const totalCell = document.getElementById(`total-${name}`);
-      const overtimeCell = document.getElementById(`overtime-total-${name}`);
-      const exceedCell = document.getElementById(`overtime-exceed-${name}`);
-      updateTotalAndOvertimeHour(name, rest, over, fullworkDay, totalCell, overtimeCell, exceedCell, dayH, nightH);
+      updateTotalAndOvertime(name, rest, over, fullworkDay, dayH, nightH, {
+        total: document.getElementById(`total-${name}`),
+        overtime: document.getElementById(`overtime-${name}`),
+        exceed: document.getElementById(`exceed-${name}`),
+      });
     });
   });
+
   document.querySelectorAll('.stat-name-cell').forEach(cell => {
     cell.addEventListener('click', function() {
-      const name = this.dataset.name;
-      const details = JSON.parse(this.dataset.details);
-      showDetailModal(name, details, period);
+      showDetailModal(this.dataset.name, JSON.parse(this.dataset.details), period);
     });
   });
 }
+
+function updateTotalAndOvertime(name, rest, over, fullworkDay, dayH, nightH, cells) {
+  const { total, overtimeTotal, overtimeExceed } = computeWorkHours(dayH, nightH, rest, over, fullworkDay);
+  cells.total.textContent = total.toFixed(1);
+  cells.overtime.textContent = overtimeTotal.toFixed(1);
+  cells.exceed.textContent = overtimeExceed.toFixed(1);
+  manualRestHours[name] = (rest === '请填写' || isNaN(rest)) ? 0 : parseFloat(rest);
+  manualOvertimeHours[name] = (over === '请填写' || isNaN(over)) ? 0 : parseFloat(over);
+  manualFullworkDays[name] = (fullworkDay === '请填写' || isNaN(fullworkDay)) ? 0 : parseFloat(fullworkDay);
+}
+
+/* ---------- 详情弹窗与备注 ---------- */
 function showDetailModal(name, details, period) {
-  const modal = document.getElementById('detailModal');
-  const modalTitle = document.getElementById('modalTitle');
-  const modalPeriod = document.getElementById('modalPeriod');
-  const detailTableBody = document.getElementById('detailTableBody');
-  modalTitle.textContent = `${name} 值班详情`;
-  modalPeriod.textContent = `周期：${period.startStr} 至 ${period.endStr}`;
-  detailTableBody.innerHTML = '';
-  if (details.length === 0) {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td colspan="5">暂无值班记录</td>`;
-    detailTableBody.appendChild(tr);
+  document.getElementById('modalTitle').textContent = `${name} 值班详情`;
+  document.getElementById('modalPeriod').textContent = `统计周期：${period.startStr} ～ ${period.endStr}`;
+  const tbody = document.getElementById('detailTableBody');
+  tbody.innerHTML = '';
+  if (!details.length) {
+    tbody.innerHTML = `<tr><td colspan="5">暂无值班记录</td></tr>`;
   } else {
     details.forEach(item => {
-      const tr = document.createElement('tr');
-      const statusHtml = item.isRest ? '<span class="rest-tag">调休</span>' : '正常';
-      tr.innerHTML = `
-        <td>${item.dateStr}</td>
-        <td>${item.weekStr}</td>
-        <td class="${item.shiftType === '早班' ? 'shift-type-day' : 'shift-type-night'}">${item.shiftType}</td>
-        <td>${item.shiftName}</td>
-        <td>${statusHtml}</td>
-      `;
-      detailTableBody.appendChild(tr);
+      const cls = item.shiftType === '早班' ? 'shift-type-day' : 'shift-type-night';
+      tbody.insertAdjacentHTML('beforeend', `
+        <tr>
+          <td>${item.dateStr}</td>
+          <td>${item.weekStr}</td>
+          <td class="${cls}">${item.shiftType}</td>
+          <td>${item.shiftName}</td>
+          <td>${item.isRest ? '<span class="rest-tag">调休</span>' : '正常'}</td>
+        </tr>`);
     });
   }
-  modal.style.display = 'flex';
+  remarkCtx = { name, statStart: period.startStr, statEnd: period.endStr };
+  loadRemark();
+  document.getElementById('detailModal').style.display = 'flex';
 }
-document.getElementById('modalClose').onclick = () => detailModal.style.display = 'none';
-detailModal.onclick = e => e.target === detailModal && (detailModal.style.display = 'none');
-function getTodayText() {
-  const t = new Date();
-  return `${t.getMonth()+1}月${t.getDate()}日`;
-}
-function scrollToColumn(el) {
-  const wrap = tableWrapper;
-  wrap.scrollLeft = el.offsetLeft - wrap.clientWidth/2 + el.offsetWidth/2;
-}
-function parseSingleName(rawName){
-  const isRest = rawName.startsWith('[休]');
-  const realName = isRest ? rawName.slice(3).trim() : rawName.trim();
-  return {isRest, realName};
-}
-function renderNormalCellName(text) {
-  if (!text || text.trim() === '') return text;
-  const parts = text.split('、').map(p=>p.trim()).filter(p=>p);
-  const list = parts.map(p=>parseSingleName(p));
-  const htmlArr = [];
-  list.forEach(item=>{
-    if(item.isRest){
-      htmlArr.push(`<span class="rest-name-person">${item.realName}</span>`);
-    }else{
-      htmlArr.push(item.realName);
-    }
-  });
-  return htmlArr.join('、');
-}
-function formatDoubleName(text) {
-  if (!text || text.trim() === '') return text;
-  const parts = text.split('、').map(p=>p.trim()).filter(p=>p);
-  const list = parts.map(p=>parseSingleName(p));
-  let firstNormalIdx = -1;
-  for(let i=0;i<list.length;i++){
-    if(!list[i].isRest){
-      firstNormalIdx = i;
-      break;
-    }
-  }
-  const htmlArr = [];
-  list.forEach((item,idx)=>{
-    if(item.isRest){
-      htmlArr.push(`<span class="rest-name-person">${item.realName}</span>`);
-    }else{
-      if(idx === firstNormalIdx){
-        htmlArr.push(`<span class="first-person">${item.realName}</span>`);
-      }else{
-        htmlArr.push(item.realName);
-      }
-    }
-  });
-  return htmlArr.join('、');
-}
-function clearAllHighlight() {
-  document.querySelectorAll('.date-header').forEach(h => {
-    h.classList.remove('active-highlight');
-    h.innerHTML = h.innerHTML.replace('<span class="today-marker">✔</span>', '');
-  });
-  document.querySelectorAll('td.cell-highlight').forEach(c => {
-    c.classList.remove('cell-highlight','morning-shift','evening-shift');
-    if (c.dataset.originalContent) {
-      c.innerHTML = renderNormalCellName(c.dataset.originalContent);
-    }
-  });
-}
-function highlightColumn(colIndex) {
-  const headerRow = document.getElementById('header-row');
-  const rows = document.querySelectorAll('tbody tr');
-  const th = headerRow.children[colIndex];
-  if (th) {
-    th.classList.add('active-highlight');
-    th.innerHTML = `<span class="today-marker">✔</span>${th.innerHTML.replace('<span class="today-marker">✔</span>','')}`;
-    scrollToColumn(th);
-  }
-  rows.forEach((r,i) => {
-    const td = r.children[colIndex];
-    if (!td || !td.dataset.originalContent) return;
-    td.classList.add('cell-highlight', i<2 ? 'morning-shift' : 'evening-shift');
-    let txt = td.dataset.originalContent;
-    if(i === 0 || i === 2){
-      txt = formatDoubleName(txt);
-    }else{
-      txt = renderNormalCellName(txt);
-    }
-    td.innerHTML = `
-      <div class="today-cell-content">
-        <div class="today-cell-shift">${['早班（大客）','早班（轻客）','晚班（大客）','晚班（轻客）'][i]}</div>
-        <div class="today-cell-name">${txt}</div>
-      </div>
-    `;
-  });
-}
-async function loadSchedule() {
+
+async function loadRemark() {
+  if (!remarkCtx) return;
+  const input = document.getElementById('remarkInput');
+  const status = document.getElementById('remarkStatus');
+  status.className = 'remark-status';
+  status.textContent = '正在加载备注…';
   try {
-    const rsp = await fetch('info.txt');
-    const txt = await rsp.text();
-    const blocks = txt.split(/\n\s*\n/)
-      .map(b=>b.trim().split('\n').map(l=>l.trim()).filter(Boolean))
-      .filter(b=>b.length>=6);
-    const headerRow = document.getElementById('header-row');
-    const tbodyRows = document.querySelectorAll('tbody tr');
-    const todayText = getTodayText();
-    let todayCol = -1;
-    const scheduleRecords = [];
-    blocks.forEach((block, idx) => {
-      const [dateStr, weekStr, s1,s2,s3,s4] = block;
-      const col = idx+1;
-      if (dateStr === todayText) todayCol = col;
-      function parseLine(l) {
-        const v = l.split('）')[1]||'';
-        return v.trim();
-      }
-      const data = [parseLine(s1), parseLine(s2), parseLine(s3), parseLine(s4)];
-      scheduleRecords.push({
-        dateStr, weekStr, dayBus:data[0], dayLight:data[1], nightBus:data[2], nightLight:data[3]
-      });
-      const th = document.createElement('th');
-      th.className = 'date-header';
-      th.innerHTML = `${dateStr}<br><span class="lunar-date ${weekStr.includes('星期六')||weekStr.includes('星期日')?'weekend':''}">${weekStr}</span>`;
-      th.onclick = () => { clearAllHighlight(); highlightColumn(col); };
-      headerRow.appendChild(th);
-      tbodyRows.forEach((tr,i) => {
-        const td = document.createElement('td');
-        let rawCellContent = data[i];
-        if (rawCellContent.includes('<rest>')) {
-          rawCellContent = rawCellContent.replace(/<rest>(.*?)<\/rest>/g, '<span class="rest-person">[$1 调休]</span>');
-        }
-        td.innerHTML = renderNormalCellName(rawCellContent);
-        td.dataset.originalContent = data[i];
-        tr.appendChild(td);
-      });
-    });
-    if (todayCol !== -1) highlightColumn(todayCol);
-    globalScheduleRecords = scheduleRecords;
-    globalStatPeriod = getStatPeriod();
-    renderStats(scheduleRecords, globalStatPeriod);
-  } catch(e) {
-    console.error('加载排班表失败：', e);
-    alert('排班表加载失败，请检查info.txt文件是否存在或格式是否正确');
+    const { name, statStart, statEnd } = remarkCtx;
+    const data = JSON.parse(localStorage.getItem('duty_remark_' + statStart + '_' + statEnd) || '{}');
+    const remark = data[name] || '';
+    input.value = remark;
+    status.textContent = remark ? '已加载保存备注' : '';
+    status.className = remark ? 'remark-status ok' : 'remark-status';
+  } catch (err) {
+    console.warn('备注加载失败：', err);
+    status.textContent = '备注加载失败，请检查网络';
+    status.className = 'remark-status err';
   }
 }
+
+async function saveRemark() {
+  if (!remarkCtx) return;
+  const input = document.getElementById('remarkInput');
+  const status = document.getElementById('remarkStatus');
+  const submit = document.getElementById('remarkSubmit');
+  const remark = input.value.trim();
+  submit.disabled = true;
+  status.className = 'remark-status';
+  status.textContent = '保存中…';
+  try {
+    const { name, statStart, statEnd } = remarkCtx;
+    const key = 'duty_remark_' + statStart + '_' + statEnd;
+    const data = JSON.parse(localStorage.getItem(key) || '{}');
+    if (remark) data[name] = remark; else delete data[name];
+    localStorage.setItem(key, JSON.stringify(data));
+    status.textContent = remark ? '备注保存成功' : '备注已清空并保存';
+    status.className = 'remark-status ok';
+  } catch (err) {
+    console.error('备注保存异常：', err);
+    status.textContent = '保存失败，请检查网络';
+    status.className = 'remark-status err';
+  } finally {
+    submit.disabled = false;
+  }
+}
+
+async function loadSavedStatData(startStr, endStr) {
+  try {
+    const data = JSON.parse(localStorage.getItem('duty_stat_' + startStr + '_' + endStr) || '{}');
+    for (const name in data) {
+      manualOvertimeHours[name] = data[name].lastRestHour;
+      manualRestHours[name] = data[name].monthRestHour;
+      manualFullworkDays[name] = data[name].fullworkDay;
+    }
+  } catch (err) {
+    console.warn('读取本地统计数据失败：', err);
+  }
+}
+
+async function saveStatToDB(name, startStr, endStr, lastRestHour, monthRestHour, fullworkDay) {
+  try {
+    const key = 'duty_stat_' + startStr + '_' + endStr;
+    const data = JSON.parse(localStorage.getItem(key) || '{}');
+    data[name] = { lastRestHour, monthRestHour, fullworkDay };
+    localStorage.setItem(key, JSON.stringify(data));
+  } catch (e) {
+    console.error('保存统计失败', e);
+  }
+}
+
+/* ---------- 初始化：事件绑定 ---------- */
+function initEvents() {
+  // 手动蓝色渲染开关：点击顶部横幅开/关（今日列始终不变）
+  document.querySelector('.schedule-card h1').addEventListener('click', () => {
+    blueOn = !blueOn;
+    renderColumns(blueOn);
+  });
+
+  document.getElementById('remarkSubmit').addEventListener('click', saveRemark);
+  document.getElementById('modalClose').onclick = () => document.getElementById('detailModal').style.display = 'none';
+  document.getElementById('detailModal').onclick = e => {
+    if (e.target === document.getElementById('detailModal')) document.getElementById('detailModal').style.display = 'none';
+  };
+}
+
+/* ---------- 初始化：鼠标粒子特效 ---------- */
+function initParticles() {
+  const canvas = document.getElementById('particleCanvas');
+  const ctx = canvas.getContext('2d');
+  let w, h;
+  const particles = [];
+  const max = 120;
+  const resize = () => { w = canvas.width = innerWidth; h = canvas.height = innerHeight; };
+  const spawn = (x, y) => particles.push({
+    x, y, r: Math.random() * 3 + 1,
+    vx: (Math.random() - 0.5) * 2, vy: (Math.random() - 0.5) * 2,
+    a: 1, decay: Math.random() * 0.015 + 0.005,
+  });
+  resize();
+  addEventListener('resize', resize);
+  addEventListener('mousemove', e => { if (particles.length < max) spawn(e.clientX, e.clientY); });
+  addEventListener('mousedown', e => { for (let i = 0; i < 25; i++) spawn(e.clientX, e.clientY); });
+  (function loop() {
+    ctx.clearRect(0, 0, w, h);
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.x += p.vx; p.y += p.vy; p.a -= p.decay;
+      if (p.a <= 0) { particles.splice(i, 1); continue; }
+      ctx.save();
+      ctx.globalAlpha = p.a;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `hsla(${Math.random() * 60 + 180},70%,60%,${p.a})`;
+      ctx.fill();
+      ctx.restore();
+    }
+    requestAnimationFrame(loop);
+  })();
+}
+
+/* ---------- 初始化：悬浮提示气泡 ---------- */
+function initTooltip() {
+  const bubble = document.getElementById('tooltipBubble');
+  const show = e => {
+    bubble.textContent = '单击名字 查看值班详情！';
+    bubble.style.display = 'block';
+    bubble.style.left = (e.pageX + 12) + 'px';
+    bubble.style.top = e.pageY + 'px';
+  };
+  document.addEventListener('mouseover', e => { if (e.target.closest('.stat-name-cell')) show(e); });
+  document.addEventListener('mousemove', e => {
+    if (bubble.style.display === 'block') {
+      bubble.style.left = (e.pageX + 12) + 'px';
+      bubble.style.top = e.pageY + 'px';
+    }
+  });
+  document.addEventListener('mouseout', e => {
+    if (e.target.closest('.stat-name-cell')) bubble.style.display = 'none';
+  });
+}
+
+/* ---------- 启动 ---------- */
+initParticles();
+initTooltip();
+setInterval(() => location.reload(), RELOAD_MS);
+initEvents();
 window.onload = loadSchedule;
+
 </script>
 </body>
 </html>
+<!-- -- -- -- -- -- -- -- -- -->
+<!-- （注：内容由AI生成） -->
